@@ -2,7 +2,8 @@ import {
     connect,
     ExtensionTransport,
   } from 'puppeteer-core/lib/esm/puppeteer/puppeteer-core-browser.js';
-  
+import {getSchedules, timeslotOverlap} from './scheduleUtil.js';
+
 // Listens for messages from the popup or other parts of the extension
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.action === "scrape") {
@@ -45,6 +46,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       console.log(classesHref);
       
       // scrape each timeslot from each available class
+      const timeslotGroups = [];
+
       for(let i = 0; i < classesHref.length; i++){
 
         // go to each page of students classes
@@ -78,9 +81,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             });
         });
 
-        console.log(timeslotGroup);
-    }
-
+        timeslotGroups.push(timeslotGroup);
+      }
+        
+      console.log(getSchedules(timeslotGroups))
       browser.disconnect();
       // sendResponse({ success: true, title: pageTitle });
     } catch (error) {

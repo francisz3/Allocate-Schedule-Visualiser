@@ -21842,97 +21842,154 @@ const {
  */
 connect, } = puppeteer;
 
-// Listens for messages from the popup or other parts of the extension
-  chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-    if (message.action === "scrape") {
-      try {
-        // create a new tab for allocate scrape
-        const url = message.url;
-        const tab = await chrome.tabs.create({ url: url });
+function getSchedules(timeslotGroups, daysOnCampus){
+    const currentCombination = [];
 
-        // connect Puppeteer to the tab
-        const browser = await connect({
-          transport: await ExtensionTransport.connectTab(tab.id),
-        });
+    // try find the days that are high priority add them to schedule
+    // drop added classes from timeslotGroups
+    for(const group of timeslotGroups){
+        if(group.length == 1){
 
-        // Get the page object and set the max height
-        const [page] = await browser.pages();
-        await page.setViewport({ width: 1366, height: 768});
-
-        // Scrape the page title as an example
-        await page.waitForSelector('title');
-        const pageTitle = await page.evaluate(() => document.title);
-        console.log(pageTitle);
-        console.log("Page Title:", pageTitle);
-
-
-        await page.waitForSelector('.subject-list');
-        const classesHref = await page.evaluate(() => {
-          // gets the advanced filters subject list for semester 1 and 2
-          const classElements = document.querySelectorAll('.subject-list');
-  
-          // gets all the available LTL and WRK 'li' elements for sem 1
-          const liElements = classElements[0].querySelectorAll('.action');
-  
-          // returns href of each class
-          return Array.from(liElements).map((li) => {
-              const classHref = li.querySelector('a').getAttribute('href');
-              return classHref;
-          });
-        });
-
-        console.log(classesHref);
-        
-        // scrape each timeslot from each available class and add to array of all timeslots
-        const timeslotGroups = [];
-
-        for(let i = 0; i < classesHref.length; i++){
-
-          // go to each page of students classes
-          await page.goto(url + classesHref[i]);
-
-          // wait for the table to load
-          await page.waitForSelector('.aplus-table');
-  
-          // get all tr elements
-          const timeslotGroup = await page.evaluate(() =>{
-              const timeslot = document.querySelector('.aplus-table tbody').querySelectorAll('tr');
-              return Array.from(timeslot).map((el) =>{
-                  // day 1
-                  const day = el.querySelectorAll('td')[1].textContent;
-                  // time 2
-                  const time = el.querySelectorAll('td')[2].textContent;
-                  // duration 5
-                  const duration = el.querySelectorAll('td')[5].textContent;
-                  // description 7
-                  const description = el.querySelectorAll('td')[7].textContent;
-                  // class type
-                  const classType = el.getAttribute('id').split('|')[1];
-                  return {
-                      day,
-                      time,
-                      duration,
-                      description,
-                      classType
-                  };
-  
-              });
-          });
-  
-          // console.log(timeslotGroup);
-          // push timeslot group to array of timeslotgroups
-          timeslotGroups.push(timeslotGroup);
+            // remove from timeslotGroups
+            currentCombination.push(group[0]);
+            timeslotGroups.splice(timeslotGroups.indexOf(group), 1);
         }
-        console.log(timeslotGroups);
-
-        browser.disconnect();
-        // sendResponse({ success: true, title: pageTitle });
-      } catch (error) {
-        console.error("Error during Puppeteer operation:", error);
-        sendResponse({ success: false, error: error.message });
-      }
     }
-    return true; // Keeps the message channel open for asynchronous responses
-  });
+
+    if(currentCombination.length > daysOnCampus);
+
+    // check if days
+    const validSchedules = [];
+
+    function generateCombination(index, currentCombination, daysOnCampus){
+        
+        if (index === timeslotGroups.length) {
+            // If we've assigned all courses, check if it meets the requirements
+                validSchedules.push(currentCombination);
+            
+            return;
+        }
+        const group = timeslotGroups[index];
+        
+        for(const slot of group){
+            // check if the slot conflicts with any already selected slots
+            const conflict = currentCombination.some((existingSlot) => existingSlot.day === slot.day && timeslotOverlap(existingSlot.time, existingSlot.duration, slot.time, slot.duration));
+                        
+            if(conflict) continue;
+
+
+           
+            generateCombination(index + 1, [...currentCombination, slot], daysOnCampus);
+        }
+
+        
+    }
+
+    generateCombination(0, currentCombination);
+    return validSchedules;
+}
+
+function timeslotOverlap(startTime1, duration1, startTime2, duration2) {
+    // convert start times to minutes from midnight
+    const s1Minutes = (parseInt(startTime1.substring(0,2)) * 60 )+ parseInt(startTime1.substring(3,5));
+    const s2Minutes = (parseInt(startTime2.substring(0,2)) * 60 )+ parseInt(startTime2.substring(3,5));
+
+    // create end time by adding duration to start time
+    const e1Minutes = s1Minutes + (parseInt(duration1[0]) * 60);
+    const e2Minutes = s2Minutes + (parseInt(duration2[0]) * 60);
+
+    return s1Minutes < e2Minutes && s2Minutes < e1Minutes;
+}
+
+// Listens for messages from the popup or other parts of the extension
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  if (message.action === "scrape") {
+    try {
+      // create a new tab for allocate scrape
+      const url = message.url;
+      const tab = await chrome.tabs.create({ url: url });
+
+      // connect Puppeteer to the tab
+      const browser = await connect({
+        transport: await ExtensionTransport.connectTab(tab.id),
+      });
+
+      // Get the page object and set the max height
+      const [page] = await browser.pages();
+      await page.setViewport({ width: 1366, height: 768});
+
+      // Scrape the page title as an example
+      await page.waitForSelector('title');
+      const pageTitle = await page.evaluate(() => document.title);
+      console.log(pageTitle);
+      console.log("Page Title:", pageTitle);
+
+
+      await page.waitForSelector('.subject-list');
+      const classesHref = await page.evaluate(() => {
+        // gets the advanced filters subject list for semester 1 and 2
+        const classElements = document.querySelectorAll('.subject-list');
+
+        // gets all the available LTL and WRK 'li' elements for sem 1
+        const liElements = classElements[0].querySelectorAll('.action');
+
+        // returns href of each class
+        return Array.from(liElements).map((li) => {
+            const classHref = li.querySelector('a').getAttribute('href');
+            return classHref;
+        });
+      });
+
+      console.log(classesHref);
+      
+      // scrape each timeslot from each available class
+      const timeslotGroups = [];
+
+      for(let i = 0; i < classesHref.length; i++){
+
+        // go to each page of students classes
+        await page.goto(url + classesHref[i]);
+
+        // wait for the table to load
+        await page.waitForSelector('.aplus-table');
+
+        // get all tr elements
+        const timeslotGroup = await page.evaluate(() =>{
+            const timeslot = document.querySelector('.aplus-table tbody').querySelectorAll('tr');
+            return Array.from(timeslot).map((el) =>{
+                // day 1
+                const day = el.querySelectorAll('td')[1].textContent;
+                // time 2
+                const time = el.querySelectorAll('td')[2].textContent;
+                // duration 5
+                const duration = el.querySelectorAll('td')[5].textContent;
+                // description 7
+                const description = el.querySelectorAll('td')[7].textContent;
+                // class type
+                const classType = el.getAttribute('id').split('|')[1];
+                return {
+                    day,
+                    time,
+                    duration,
+                    description,
+                    classType
+                };
+
+            });
+        });
+
+        timeslotGroups.push(timeslotGroup);
+      }
+        
+      console.log(getSchedules(timeslotGroups));
+      browser.disconnect();
+      // sendResponse({ success: true, title: pageTitle });
+    } catch (error) {
+      console.error("Error during Puppeteer operation:", error);
+      sendResponse({ success: false, error: error.message });
+    }
+  }
+  return true; // Keeps the message channel open for asynchronous responses
+});
 
 export { defer as $, AsyncIterableUtil as A, getSourceUrlComment as B, CDPSession as C, Deferred as D, EventEmitter as E, getSourcePuppeteerURLIfAvailable as F, isString as G, HTTPResponse as H, ARIAQueryHandler as I, JSHandle as J, SOURCE_URL_REGEX as K, LazyArg as L, of as M, combineLatest as N, fromEmitterEvent as O, PuppeteerURL as P, map as Q, Realm as R, SecurityDetails as S, TargetCloseError as T, UnsupportedOperation as U, first as V, WebWorker as W, raceWith as X, timeout as Y, Accessibility as Z, ConsoleMessage as _, CallbackRegistry as a, filter as a0, isErrorLike as a1, firstValueFrom as a2, race as a3, switchMap as a4, delayWhen as a5, fromAbortSignal as a6, Frame as a7, throwIfDetached as a8, Keyboard as a9, Mouse as aa, MouseButton as ab, Touchscreen as ac, TouchError as ad, EmulationManager as ae, Tracing as af, Coverage as ag, parsePDFOptions as ah, from as ai, stringToTypedArray as aj, evaluationString as ak, Page as al, bubble as am, Target as an, TargetType as ao, WEB_PERMISSION_TO_PROTOCOL_PERMISSION as ap, BrowserContext as aq, Browser as ar, assert as b, debug as c, debugError as d, DisposableStack as e, disposeSymbol as f, Dialog as g, ElementHandle as h, inertIfDisposed as i, bindIsolatedHandle as j, environment as k, interpolateFunction as l, invokeAtMostOnceForArguments as m, HTTPRequest as n, stringToBase64 as o, packageVersion as p, handleError as q, STATUS_TEXTS as r, stringifyFunction as s, throwIfDisposed as t, isPlainObject as u, isRegExp as v, isDate as w, ProtocolError as x, TimeoutError as y, scriptInjector as z };
