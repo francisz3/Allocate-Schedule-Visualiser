@@ -1,0 +1,9 @@
+/* Table CSS */
+
+.cal-table {
+    padding: 100px;
+}
+
+.cal-table > * > tr {
+    width: 100px;
+}

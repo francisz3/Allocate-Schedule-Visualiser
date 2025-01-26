@@ -21957,14 +21957,19 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         const timeslotGroup = await page.evaluate(() =>{
             const timeslot = document.querySelector('.aplus-table tbody').querySelectorAll('tr');
             return Array.from(timeslot).map((el) =>{
+                // need to check if table is changed when students are allowed prefereneces
+                let j = 0
+                if(el.querySelectorAll('td')[0].querySelector("select")){
+                  j = 1;
+                }
                 // day 1
-                const day = el.querySelectorAll('td')[1].textContent;
+                const day = el.querySelectorAll('td')[1 + j].textContent;
                 // time 2
-                const time = el.querySelectorAll('td')[2].textContent;
+                const time = el.querySelectorAll('td')[2 + j].textContent;
                 // duration 5
-                const duration = el.querySelectorAll('td')[5].textContent;
+                const duration = el.querySelectorAll('td')[5 + j].textContent;
                 // description 7
-                const description = el.querySelectorAll('td')[7].textContent;
+                const description = el.querySelectorAll('td')[7 + j].textContent;
                 // class type
                 const classType = el.getAttribute('id').split('|')[1];
                 return {
@@ -21981,9 +21986,18 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         timeslotGroups.push(timeslotGroup);
       }
         
-      console.log(getSchedules(timeslotGroups));
+      const validSchedules = getSchedules(timeslotGroups);
+
+      // create a new tab for visualiser html and send valid schedules to the page
+      const visUrl = chrome.runtime.getURL("visualiser.html");
+      const queryParams = new URLSearchParams({ data: JSON.stringify(validSchedules) });
+      
+      chrome.tabs.create({
+        url: `${visUrl}?${queryParams.toString()}`
+      });
+
+      sendResponse({ success: true, action: "scrapeResult", data: timeslotGroups });
       browser.disconnect();
-      // sendResponse({ success: true, title: pageTitle });
     } catch (error) {
       console.error("Error during Puppeteer operation:", error);
       sendResponse({ success: false, error: error.message });
