@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
     const container = document.getElementById("data-container");
 
-    const exampleSchedule = validSchedules[2];
+    const exampleSchedule = validSchedules[6];
 
     console.log(exampleSchedule);
 
@@ -45,22 +45,18 @@ function getCellForTimeSlot(time, day, duration, description, classType){
 
     // after finding cell - add div (as timeslot) and corresponding details to it
     cell.innerHTML = `<div class="timeslot">${classType} ${description} ${time}</div>`; 
-    // cell.style. = "flex";
+    
+
+    // check if timeslot is ends in :30 :60
+    const timeslotDiv = cell.querySelector('.timeslot');
+    const minutesPastHour = parseInt(time.substring(3,5))
+    timeslotDiv.style.top = (( minutesPastHour/60 ) * 100) + "%";
+
+    //multiply height of timeslot by duration
+    
+    timeslotDiv.style.height = 100 * parseInt(duration) + "%";
 
     // vertical align top to td
     // add div inside the td
-
-    // div should have text, time, location
-    // css styling of 
-    // background-color: blue;
-    // width: 12px;
-    // vertical-align: top;
-    // height: 1px;
-    // position: absolute;
     
 }
-  
-
-// to find out how to do :30 :45
-// 30/60 = 50 -> 50% height
-//

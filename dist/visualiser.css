@@ -1,24 +1,48 @@
 /* Table CSS */
 
 .sched-table {
-    padding: 100px;
-    width: 100%;
+    width: 80%;
+    border-spacing: 2px;
 }
 
-.sched-table > * > tr > td {
-    /* change for different viewports */
-    /* width: 150px;
-    height: 60px; */
+/* scrollable table css */
+.tableWrapper{
+    height: 200px;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    /* align-items:center; */
+    margin-top: 100px;
+}
+
+thead tr th {
+    position: sticky;
+    top: 0;
+}
+
+th{
+    background-color: white;
+    z-index: 2;
+}
+
+/* table rows need to be uniform (Wednesday) */
+
+
+/* Make sure all timeslots start at the top */
+.sched-table > tbody > tr > td {
+    vertical-align: top;
     position: relative;
-    width: 50%;
+    height: 40px;
+    width: 50px;
+    align-items: start;
 }
 
 
 .timeslot {
     color: white;
     background-color: blue;
-    width: inherit;
-    vertical-align: top;
-    height: 50px;
-    position: absolute;
+    opacity: 90%;
+    width: 100%;
+    height: 100%;
+    position: absolute;   
 }
