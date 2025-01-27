@@ -21879,7 +21879,7 @@ function getSchedules(timeslotGroups, daysOnCampus){
 
 
            
-            generateCombination(index + 1, [...currentCombination, slot], daysOnCampus);
+            generateCombination(index + 1, [...currentCombination, slot]);
         }
 
         
@@ -21921,7 +21921,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       // Scrape the page title as an example
       await page.waitForSelector('title');
       const pageTitle = await page.evaluate(() => document.title);
-      console.log(pageTitle);
       console.log("Page Title:", pageTitle);
 
 
@@ -21939,8 +21938,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             return classHref;
         });
       });
-
-      console.log(classesHref);
       
       // scrape each timeslot from each available class
       const timeslotGroups = [];
@@ -21958,7 +21955,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             const timeslot = document.querySelector('.aplus-table tbody').querySelectorAll('tr');
             return Array.from(timeslot).map((el) =>{
                 // need to check if table is changed when students are allowed prefereneces
-                let j = 0
+                let j = 0;
                 if(el.querySelectorAll('td')[0].querySelector("select")){
                   j = 1;
                 }

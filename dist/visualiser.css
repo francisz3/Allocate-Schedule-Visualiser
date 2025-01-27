@@ -1,9 +1,24 @@
 /* Table CSS */
 
-.cal-table {
+.sched-table {
     padding: 100px;
+    width: 100%;
 }
 
-.cal-table > * > tr {
-    width: 100px;
+.sched-table > * > tr > td {
+    /* change for different viewports */
+    /* width: 150px;
+    height: 60px; */
+    position: relative;
+    width: 50%;
+}
+
+
+.timeslot {
+    color: white;
+    background-color: blue;
+    width: inherit;
+    vertical-align: top;
+    height: 50px;
+    position: absolute;
 }

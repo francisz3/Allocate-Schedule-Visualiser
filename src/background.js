@@ -24,7 +24,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       // Scrape the page title as an example
       await page.waitForSelector('title');
       const pageTitle = await page.evaluate(() => document.title);
-      console.log(pageTitle);
       console.log("Page Title:", pageTitle);
 
 
@@ -42,8 +41,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             return classHref;
         });
       });
-
-      console.log(classesHref);
       
       // scrape each timeslot from each available class
       const timeslotGroups = [];
