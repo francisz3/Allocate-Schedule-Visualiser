@@ -2,12 +2,12 @@
 
 .sched-table {
     width: 80%;
-    border-spacing: 2px;
+    border-spacing: 1px;
 }
 
 /* scrollable table css */
 .tableWrapper{
-    height: 200px;
+    height: 500px;
     overflow-y: auto;
     display: flex;
     justify-content: center;

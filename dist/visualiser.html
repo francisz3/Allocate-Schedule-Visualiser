@@ -8,7 +8,54 @@
     <link rel="stylesheet" href="visualiser.css">
 </head>
 <body>
+        <!-- Filtering -->
+         <h2>Filters</h2>
+        <form id="filterForm">
 
+            <!-- Preferred Days -->
+            <p>Preferred days</p>
+            <input type="checkbox" id="pref-mon" name="day-cb" value="Mon">
+            <label for="pref-mon">Mon</label><br>
+            <input type="checkbox" id="pref-tue" name="day-cb" value="Tue">
+            <label for="pref-tue">Tue</label><br>
+            <input type="checkbox" id="pref-wed" name="day-cb" value="Wed">
+            <label for="pref-wed">Wed</label><br>
+            <input type="checkbox" id="pref-thu" name="day-cb" value="Thu">
+            <label for="pref-thu">Thu</label><br>
+            <input type="checkbox" id="pref-fri" name="day-cb" value="Fri">
+            <label for="pref-fri">Fri</label><br>
+            
+    
+    
+            <!-- Dropdown for number of days at uni -->
+            <p>Preferred number of days at uni</p>
+            <select>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+    
+            <!-- Preferred time at uni -->
+            <p>Preferred time at uni</p>
+            <select id="earliestDropdown">
+                <option value="" disabled selected>Earliest</option>
+            </select>
+    
+            <select id="latestDropdown">
+                <option value="" disabled selected>Latest</option>
+            </select>
+    
+            <button type="submit">Apply</button>
+        </form>
+    
+    <!-- Schedule List -->
+     <form>
+        <ul id="scheduleList">
+
+        </ul>
+    </form>
     <!-- Table -->
     <div class="tableWrapper">
     <table class="sched-table">
@@ -26,225 +73,14 @@
         
         <!-- body section -->
          <tbody style="background-color: green;">
-            <tr>
-                <td>00:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>01:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>02:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>03:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>04:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>05:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>06:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>07:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>08:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>09:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>10:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>11:00AM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>12:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>13:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>14:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>15:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>16:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>17:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>18:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>19:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>20:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>21:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>22:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
-
-            <tr>
-                <td>23:00PM</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-                <td>...</td>
-            </tr>
+            
          </tbody>
         
 
     </table>
+    
+    
 </div>
+
 </body>
 </html>
