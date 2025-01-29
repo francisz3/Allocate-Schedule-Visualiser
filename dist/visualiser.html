@@ -14,40 +14,40 @@
 
             <!-- Preferred Days -->
             <p>Preferred days</p>
-            <input type="checkbox" id="pref-mon" name="day-cb" value="Mon">
+            <input type="checkbox" id="pref-mon" name="day-cb" value="Mon" checked="true">
             <label for="pref-mon">Mon</label><br>
-            <input type="checkbox" id="pref-tue" name="day-cb" value="Tue">
+            <input type="checkbox" id="pref-tue" name="day-cb" value="Tue" checked="true">
             <label for="pref-tue">Tue</label><br>
-            <input type="checkbox" id="pref-wed" name="day-cb" value="Wed">
+            <input type="checkbox" id="pref-wed" name="day-cb" value="Wed" checked="true">
             <label for="pref-wed">Wed</label><br>
-            <input type="checkbox" id="pref-thu" name="day-cb" value="Thu">
+            <input type="checkbox" id="pref-thu" name="day-cb" value="Thu" checked="true">
             <label for="pref-thu">Thu</label><br>
-            <input type="checkbox" id="pref-fri" name="day-cb" value="Fri">
+            <input type="checkbox" id="pref-fri" name="day-cb" value="Fri" checked="true">
             <label for="pref-fri">Fri</label><br>
             
     
     
             <!-- Dropdown for number of days at uni -->
             <p>Preferred number of days at uni</p>
-            <select>
+            <select id="noDaysDropdown" required="true">
                 <option value="1">1</option>
                 <option value="2">2</option>
-                <option value="3">3</option>
+                <option value="3" selected="selected">3</option>
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select>
     
             <!-- Preferred time at uni -->
             <p>Preferred time at uni</p>
-            <select id="earliestDropdown">
+            <select id="earliestDropdown" required="true">
                 <option value="" disabled selected>Earliest</option>
             </select>
     
-            <select id="latestDropdown">
+            <select id="latestDropdown" required="true">
                 <option value="" disabled selected>Latest</option>
             </select>
     
-            <button type="submit">Apply</button>
+            <button id="filterBtn" type="submit">Apply</button>
         </form>
     
     <!-- Schedule List -->
@@ -78,9 +78,14 @@
         
 
     </table>
-    
+   
     
 </div>
+
+    <!-- Manual timeslot edit -->
+    <div class="manual-container">
+        <!-- add dropdowns for each -->
+    </div>
 
 </body>
 </html>

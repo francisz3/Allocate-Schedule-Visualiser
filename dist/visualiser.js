@@ -1,31 +1,84 @@
 // Get the data
 let validSchedules = null;
+let timeslotGroups = null;
+const manualContainer = document.querySelector(".manual-container");
+
 document.addEventListener("DOMContentLoaded", () => {
     // Get data from query params
     const queryParams = new URLSearchParams(window.location.search);
     validSchedules = JSON.parse(queryParams.get("data"));
-
+    timeslotGroups = JSON.parse(queryParams.get("timeslots"));
+    console.log(timeslotGroups.length);
     // load sample schedules
     loadSchedules(validSchedules);
+
+    // load dropdowns for manual edit
+    loadUnitDropdowns();
 });
 
-// Listens to selected schedules -> loads it into virtual schedule
-// should take in an array of array -> [ [] ]
+// Filters schedules according to users desired days + no days + time at uni.
+// Get filter form
+const filterForm = document.getElementById("filterForm");
+filterForm.addEventListener('submit',function (event){
+    event.preventDefault();
 
+    // clear all scheduleBtns
+    const scheduleBtns = document.querySelectorAll(".scheduleBtn");
+    scheduleBtns.forEach(btn => btn.remove());
+
+    // find the preferred days user selected
+    const selectedDays = []
+    document.querySelectorAll('input[name = "day-cb"]:checked').forEach((checkbox)=>{
+        selectedDays.push(checkbox.value);
+    })
+
+    // find number of days
+    const prefNoDays = document.getElementById('noDaysDropdown').value;
+
+    // find chosen earliest and latest time
+    const chosenETime = document.getElementById('earliestDropdown').value;
+    const chosenLTime = document.getElementById('latestDropdown').value;
+
+
+    // check if preferred number of days is possible with schedules
+    const filteredSchedules = [];
+
+    for(const schedule of validSchedules){
+        const daysAtUni = [... new Set(schedule.map(timeslot => timeslot.day))];
+
+        // check if time fits within desired times
+        const times = schedule.map(timeslot => timeslot.time);
+        const earliestTime = times.reduce((earliest, current) => current < earliest ? current : earliest, times[0]);
+        const latestTime = times.reduce((latest, current) => current > latest ? current : latest, times[0]);
+
+        const fitsWithinChosen = chosenETime <= earliestTime && chosenLTime >= latestTime;
+
+        if(daysAtUni.length == prefNoDays && daysAtUni.some(day => selectedDays.includes(day)) && fitsWithinChosen){
+            filteredSchedules.push(schedule);
+        }
+    }
+
+    loadSchedules(filteredSchedules);
+
+    // if filteredSchedules length == 0 - then theres no schedules available for chosen filters
+    // prompt user
+
+});
+
+
+// Loads schedules that user can select to show in their schedule view
 function loadSchedules(validSchedules){
     // get the schedule list
     const scheduleList = document.getElementById("scheduleList");
-    const exampleSchedules = validSchedules.slice(30,38);
-    for(const schedule of exampleSchedules){
+    const shortenedSched = validSchedules.slice(0,5);
+    for(const schedule of shortenedSched){
         const scheduleBtn = document.createElement('button');
         // scheduleBtn.value = schedule;
 
         // Days - earliest time, latest time
-        console.log(schedule);
         const scheduleDetails = getScheduleDetails(schedule);
-        scheduleBtn.textContent = scheduleDetails[0] + " Earliest Time: " + scheduleDetails[1][0] + " Latest Time: " + scheduleDetails[1][1];
-        scheduleBtn.id = "scheduleButton"
-        scheduleBtn.type = "button"
+        scheduleBtn.textContent = scheduleDetails[0] + " Earliest Time: " + scheduleDetails[1][0] + " Latest Time: " + scheduleDetails[1][1]
+        scheduleBtn.className = "scheduleBtn"
         
         // add event listener for button to see if clicked
         // once clicked add schedule to schedule view
@@ -40,7 +93,7 @@ function loadSchedules(validSchedules){
             // put each timeslot of the schedule onto a corresponding cell
             for(const timeslot of schedule){
                 // get row and column that corresponds to timeslot
-                getCellForTimeSlot(timeslot.time, timeslot.day, timeslot.duration, timeslot.description, timeslot.classType)
+                getCellForTimeSlot(timeslot.time, timeslot.day, timeslot.duration, timeslot.description, timeslot.classType, timeslot.location)
             }
         });
 
@@ -49,7 +102,7 @@ function loadSchedules(validSchedules){
     }
 }
 
-
+// gets details of schedule to preview what days at uni the schedule will have and the earliest and latest time
 function getScheduleDetails(schedule){
     const scheduleDetails = [];
 
@@ -69,22 +122,12 @@ function getScheduleDetails(schedule){
 
   
 
-// Listens to form input from user
-const filterForm = document.getElementById("filterForm");
-filterForm.addEventListener('submit',function (event){
-    event.preventDefault();
-    
-    const selectedDays = []
-    document.querySelectorAll('input[name = "day-cb"]:checked').forEach((checkbox)=>{
-        selectedDays.push(checkbox.value);
-    })
-});
 
 
 
 
 // finds the corresponding cell (row and column) according to time and day of timeslot 
-function getCellForTimeSlot(time, day, duration, description, classType){
+function getCellForTimeSlot(time, day, duration, description, classType, location){
     // Day list
     const dayList = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 
@@ -105,7 +148,7 @@ function getCellForTimeSlot(time, day, duration, description, classType){
     const cell = rows[timeIndex].querySelectorAll('td')[dayIndex];
 
     // after finding cell - add div (as timeslot) and corresponding details to it
-    cell.innerHTML = `<div class="timeslot">${classType} ${description} ${time}</div>`; 
+    cell.innerHTML = `<div class="timeslot">${classType} ${description} ${time} ${location}</div>`; 
     
 
     // check if timeslot is ends in :30 :60
@@ -116,6 +159,7 @@ function getCellForTimeSlot(time, day, duration, description, classType){
     //multiply height of timeslot by duration
     
     timeslotDiv.style.height = 100 * parseInt(duration) + "%";
+    timeslotDiv.id = classType + "-" + description;
     
 }
 
@@ -128,7 +172,7 @@ function populateTimeDropdown(dropdownId) {
     for (let hour = startHour; hour <= endHour; hour++) {
       const formattedHour = hour.toString().padStart(2, '0');
       const option = document.createElement('option');
-      option.value = hour; 
+      option.value = `${formattedHour}:00`; 
       option.textContent = `${formattedHour}:00`;
       dropdown.appendChild(option);
     }
@@ -166,4 +210,52 @@ timeSlots.forEach(time => {
 
     // Append the row to the tbody
     tbody.appendChild(row);
+});
+
+
+function loadUnitDropdowns(){
+    // Generate dropdowns according to units
+    timeslotGroups.forEach((unitGroup, index) => {
+    
+        const unitDropdown = document.createElement("select");
+        unitDropdown.id = `unitDropdown-${index}`;
+        const unitDropdownLabel = document.createElement("label");
+    
+        unitGroup.map(timeslot => {
+            const timeslotOption = document.createElement("option");
+            timeslotOption.textContent = timeslot.day + " @ " + timeslot.time + " (" + timeslot.location + ")";
+            timeslotOption.value = JSON.stringify(timeslot);
+            unitDropdown.appendChild(timeslotOption);
+        });
+    
+        unitDropdownLabel.textContent = unitGroup[0].classType + " " + unitGroup[0].description;
+        unitDropdownLabel.setAttribute('for', unitDropdown.id);
+        
+        manualContainer.appendChild(unitDropdownLabel);
+        manualContainer.appendChild(unitDropdown);
+
+        // add event listener for each unit group
+
+        unitDropdown.addEventListener("change", function(){
+            const timeslotSelection = JSON.parse(unitDropdown.value);
+
+            // clear existing timeslot from schedule view if present
+            const existingTimeslot = document.getElementById(timeslotSelection.classType + "-" + timeslotSelection.description);
+            if(existingTimeslot){
+                existingTimeslot.remove();
+            }
+            
+            // add timeslot to schedule view
+            getCellForTimeSlot(timeslotSelection.time, timeslotSelection.day, timeslotSelection.duration, timeslotSelection.description, timeslotSelection.classType, timeslotSelection.location );
+
+            
+        });
+        
+    })
+}
+
+// Sets schedule view default scroll position lower
+document.addEventListener("DOMContentLoaded", () => {
+    const scrollableDiv = document.querySelector(".tableWrapper");
+    scrollableDiv.scrollTop = 325;  
 });

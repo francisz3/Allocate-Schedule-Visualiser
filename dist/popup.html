@@ -8,16 +8,15 @@
   <h2>Allocate Schedule Visualiser</h2>
 
   <label for="unversity">Select your University</label>
-  <select name="university" id="university">
+  <select name="university" id="selectedUniversity">
     <option value="rmit">RMIT</option>
-    <option value="acu">ACU</option>
     <option value="monash">Monash</option>
   </select>
 
   <label for="semester">Which semester do you need a schedule for?</label>
-  <select name="semester" id="semester">
-    <option value="1">1</option>
-    <option value="2">2</option>
+  <select name="semester" id="selectedSemester">
+    <option value="0">1</option>
+    <option value="1">2</option>
   </select>
 
   <button id="scrape-button">Visualise Schedule</button>

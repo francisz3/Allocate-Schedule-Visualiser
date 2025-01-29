@@ -46,3 +46,8 @@ th{
     height: 100%;
     position: absolute;   
 }
+
+.manual-container{
+    display: flex;
+    flex-direction: column;
+}

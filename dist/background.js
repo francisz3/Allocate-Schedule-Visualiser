@@ -21916,28 +21916,35 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       // Get the page object and set the max height
       const [page] = await browser.pages();
-      await page.setViewport({ width: 1366, height: 768});
+      
+      const { width, height } = await page.evaluate(() => {
+        return { width: window.screen.availWidth, height: window.screen.availHeight };
+      });
+    
+    await page.setViewport({ width, height });
+   
 
       // Scrape the page title as an example
       await page.waitForSelector('title');
       const pageTitle = await page.evaluate(() => document.title);
       console.log("Page Title:", pageTitle);
 
-
       await page.waitForSelector('.subject-list');
-      const classesHref = await page.evaluate(() => {
+      
+      const semester = parseInt(message.semester);
+      const classesHref = await page.evaluate((semester) => {
         // gets the advanced filters subject list for semester 1 and 2
         const classElements = document.querySelectorAll('.subject-list');
 
         // gets all the available LTL and WRK 'li' elements for sem 1
-        const liElements = classElements[0].querySelectorAll('.action');
+        const liElements = classElements[semester].querySelectorAll('.action');
 
         // returns href of each class
         return Array.from(liElements).map((li) => {
             const classHref = li.querySelector('a').getAttribute('href');
             return classHref;
         });
-      });
+      }, semester);
       
       // scrape each timeslot from each available class
       const timeslotGroups = [];
@@ -21963,6 +21970,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 const day = el.querySelectorAll('td')[1 + j].textContent;
                 // time 2
                 const time = el.querySelectorAll('td')[2 + j].textContent;
+                // location 4
+                const location = el.querySelectorAll('td')[4 + j].textContent === "-" ? "Canvas" : el.querySelectorAll('td')[4 + j].textContent;
                 // duration 5
                 const duration = el.querySelectorAll('td')[5 + j].textContent;
                 // description 7
@@ -21972,6 +21981,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 return {
                     day,
                     time,
+                    location,
                     duration,
                     description,
                     classType
@@ -21982,12 +21992,13 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
         timeslotGroups.push(timeslotGroup);
       }
-        
+      
+      const allTimeslots = [...timeslotGroups];
       const validSchedules = getSchedules(timeslotGroups);
-
+      
       // create a new tab for visualiser html and send valid schedules to the page
       const visUrl = chrome.runtime.getURL("visualiser.html");
-      const queryParams = new URLSearchParams({ data: JSON.stringify(validSchedules) });
+      const queryParams = new URLSearchParams({ data: JSON.stringify(validSchedules), timeslots: JSON.stringify(allTimeslots) });
       
       chrome.tabs.create({
         url: `${visUrl}?${queryParams.toString()}`

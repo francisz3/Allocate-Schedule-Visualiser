@@ -58,7 +58,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             const timeslot = document.querySelector('.aplus-table tbody').querySelectorAll('tr');
             return Array.from(timeslot).map((el) =>{
                 // need to check if table is changed when students are allowed prefereneces
-                let j = 0
+                let j = 0;
                 if(el.querySelectorAll('td')[0].querySelector("select")){
                   j = 1;
                 }
@@ -66,6 +66,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 const day = el.querySelectorAll('td')[1 + j].textContent;
                 // time 2
                 const time = el.querySelectorAll('td')[2 + j].textContent;
+                // location 4
+                const location = el.querySelectorAll('td')[4 + j].textContent === "-" ? "Canvas" : el.querySelectorAll('td')[4 + j].textContent;
                 // duration 5
                 const duration = el.querySelectorAll('td')[5 + j].textContent;
                 // description 7
@@ -75,6 +77,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 return {
                     day,
                     time,
+                    location,
                     duration,
                     description,
                     classType
@@ -85,7 +88,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
         timeslotGroups.push(timeslotGroup);
       }
-        
+
       const validSchedules = getSchedules(timeslotGroups);
 
       // create a new tab for visualiser html and send valid schedules to the page
