@@ -1,91 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASV</title>
-    <script src="visualiser.js" defer></script>
-    <link rel="stylesheet" href="visualiser.css">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ASV</title>
+        <script src="visualiser.js" defer></script>
+        <link rel="stylesheet" href="visualiser.css">
+    </head>
+    <body>
         <!-- Filtering -->
-         <h2>Filters</h2>
-        <form id="filterForm">
+        <div class="main-container">
 
-            <!-- Preferred Days -->
-            <p>Preferred days</p>
-            <input type="checkbox" id="pref-mon" name="day-cb" value="Mon" checked="true">
-            <label for="pref-mon">Mon</label><br>
-            <input type="checkbox" id="pref-tue" name="day-cb" value="Tue" checked="true">
-            <label for="pref-tue">Tue</label><br>
-            <input type="checkbox" id="pref-wed" name="day-cb" value="Wed" checked="true">
-            <label for="pref-wed">Wed</label><br>
-            <input type="checkbox" id="pref-thu" name="day-cb" value="Thu" checked="true">
-            <label for="pref-thu">Thu</label><br>
-            <input type="checkbox" id="pref-fri" name="day-cb" value="Fri" checked="true">
-            <label for="pref-fri">Fri</label><br>
-            
-    
-    
-            <!-- Dropdown for number of days at uni -->
-            <p>Preferred number of days at uni</p>
-            <select id="noDaysDropdown" required="true">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3" selected="selected">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select>
-    
-            <!-- Preferred time at uni -->
-            <p>Preferred time at uni</p>
-            <select id="earliestDropdown" required="true">
-                <option value="" disabled selected>Earliest</option>
-            </select>
-    
-            <select id="latestDropdown" required="true">
-                <option value="" disabled selected>Latest</option>
-            </select>
-    
-            <button id="filterBtn" type="submit">Apply</button>
-        </form>
-    
-    <!-- Schedule List -->
-     <form>
-        <ul id="scheduleList">
-
-        </ul>
-    </form>
-    <!-- Table -->
-    <div class="tableWrapper">
-    <table class="sched-table">
-        <!-- Heading/Day section -->
-        <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th>Monday</th>
-                <th>Tuesday</th>
-                <th>Wednesday</th>
-                <th>Thursday</th>
-                <th>Friday</th>
-            </tr>
-        </thead>
+            <div class="filter-container">
+                <form id="filterForm">
+                    <h2>Filters</h2>
+                    <!-- Preferred Days -->
+                    <p>Preferred days</p>
+                    <input type="checkbox" id="pref-mon" name="day-cb" value="Mon" checked="true">
+                    <label for="pref-mon">Mon</label><br>
+                    <input type="checkbox" id="pref-tue" name="day-cb" value="Tue" checked="true">
+                    <label for="pref-tue">Tue</label><br>
+                    <input type="checkbox" id="pref-wed" name="day-cb" value="Wed" checked="true">
+                    <label for="pref-wed">Wed</label><br>
+                    <input type="checkbox" id="pref-thu" name="day-cb" value="Thu" checked="true">
+                    <label for="pref-thu">Thu</label><br>
+                    <input type="checkbox" id="pref-fri" name="day-cb" value="Fri" checked="true">
+                    <label for="pref-fri">Fri</label><br>
+                    
         
-        <!-- body section -->
-         <tbody style="background-color: green;">
-            
-         </tbody>
         
+                    <!-- Dropdown for number of days at uni -->
+                    <p>Preferred number of days at uni</p>
+                    <select id="noDaysDropdown" required="true">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3" selected="selected">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+        
+                    <!-- Preferred time at uni -->
+                    <p>Preferred time at uni</p>
+                    <select id="earliestDropdown" required="true">
+                        <option value="" disabled selected>Earliest</option>
+                    </select>
+        
+                    <select id="latestDropdown" required="true">
+                        <option value="" disabled selected>Latest</option>
+                    </select>
+        
+                    <button id="filterBtn" type="submit">Apply</button>
+                </form>
+                
+                <!-- Schedule List -->
+                <div>
+                    <h3 id="schedule-notification"></h3>
+                    <ul class="schedule-list"id="scheduleList">
+                    </ul>    
+                </div>
+            </div>
+            
+                
+            
+            <!-- Schedule View -->
+            <div class="schedule-container">
+                <div class="tableWrapper">
+                    <table class="sched-table">
+                        <!-- Heading/Day section -->
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th>
+                                <th>Monday</th>
+                                <th>Tuesday</th>
+                                <th>Wednesday</th>
+                                <th>Thursday</th>
+                                <th>Friday</th>
+                            </tr>
+                        </thead>
+                        
+                        <!-- body section -->
+                        <tbody style="background-color: #DBD3C9;">
+                            
+                        </tbody>
+                        
+        
+                    </table>
+                </div>
 
-    </table>
-   
-    
-</div>
 
-    <!-- Manual timeslot edit -->
-    <div class="manual-container">
-        <!-- add dropdowns for each -->
-    </div>
+                 <!-- Manual timeslot edit -->
+                <div class="manual-container">
+                    <!-- add dropdowns for each -->
+                </div>
+            </div>
+            
+        </div>
 
-</body>
+
+       
+
+    </body>
 </html>

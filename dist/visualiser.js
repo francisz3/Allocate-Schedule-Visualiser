@@ -68,6 +68,16 @@ filterForm.addEventListener('submit',function (event){
 
 // Loads schedules that user can select to show in their schedule view
 function loadSchedules(validSchedules){
+    // first check if theres any existing validSchedules
+    const scheduleNotification = document.getElementById("schedule-notification");
+    if(validSchedules.length == 0){
+        scheduleNotification.textContent = "Sorry! There are no possible schedules that fit within your parameters";
+        return;
+    }
+
+    scheduleNotification.textContent = "Recommended Schedules";
+
+
     // get the schedule list
     const scheduleList = document.getElementById("scheduleList");
     const shortenedSched = validSchedules.slice(0,5);
