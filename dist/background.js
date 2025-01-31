@@ -21927,11 +21927,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       // Scrape the page title as an example
       await page.waitForSelector('title');
-      const pageTitle = await page.evaluate(() => document.title);
-      console.log("Page Title:", pageTitle);
 
+      // gets the subject list to find each href of subject
       await page.waitForSelector('.subject-list');
-      
+
+      // instatiate the semester
       const semester = parseInt(message.semester);
 
       const classesHref = await page.evaluate((semester) => {
@@ -22031,11 +22031,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         url: `${visUrl}?${queryParams.toString()}`
       });
 
-      sendResponse({ success: true, action: "scrapeResult", data: timeslotGroups });
       browser.disconnect();
     } catch (error) {
       console.error("Error during Puppeteer operation:", error);
-      sendResponse({ success: false, error: error.message });
       
     }
   }

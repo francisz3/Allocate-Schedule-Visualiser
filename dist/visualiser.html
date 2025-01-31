@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>ASV</title>
         <script src="visualiser.js" defer></script>
-        <link rel="stylesheet" href="visualiser.css">
+        <link rel="stylesheet" href="/css/visualiser.css">
     </head>
     <body>
         <!-- Filtering -->
@@ -42,21 +42,22 @@
                     <!-- Preferred time at uni -->
                     <p>Preferred time at uni</p>
                     <select id="earliestDropdown" required="true">
-                        <option value="" disabled selected>Earliest</option>
+                        <option value="" disabled selected>Earliest class start</option>
                     </select>
         
                     <select id="latestDropdown" required="true">
-                        <option value="" disabled selected>Latest</option>
+                        <option value="" disabled selected>Latest class start</option>
                     </select>
         
                     <button id="filterBtn" type="submit">Apply</button>
                 </form>
                 
                 <!-- Schedule List -->
-                <div>
+                <div id="schedule-info">
                     <h3 id="schedule-notification"></h3>
                     <ul class="schedule-list"id="scheduleList">
-                    </ul>    
+                    </ul>
+                    <button id="vm-btn" style="display: none" disabled>View More</button>                        
                 </div>
             </div>
             

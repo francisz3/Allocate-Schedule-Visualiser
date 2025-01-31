@@ -1,6 +1,7 @@
 // Get the data
 let validSchedules = null;
 let timeslotGroups = null;
+let currentSchedules = null;
 const manualContainer = document.querySelector(".manual-container");
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -8,8 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const queryParams = new URLSearchParams(window.location.search);
     validSchedules = JSON.parse(queryParams.get("data"));
     timeslotGroups = JSON.parse(queryParams.get("timeslots"));
-    console.log(timeslotGroups.length);
-    // load sample schedules
+    currentSchedules = validSchedules;
+
+    // load initial sample schedules
     loadSchedules(validSchedules);
 
     // load dropdowns for manual edit
@@ -26,10 +28,10 @@ filterForm.addEventListener('submit',function (event){
     const scheduleBtns = document.querySelectorAll(".scheduleBtn");
     scheduleBtns.forEach(btn => btn.remove());
 
-    // find the preferred days user selected
-    const selectedDays = []
-    document.querySelectorAll('input[name = "day-cb"]:checked').forEach((checkbox)=>{
-        selectedDays.push(checkbox.value);
+    // find the days which they do not want to go uni
+    const unprefDays = []
+    document.querySelectorAll('input[name = "day-cb"]:not(:checked)').forEach((checkbox)=>{
+        unprefDays.push(checkbox.value);
     })
 
     // find number of days
@@ -41,6 +43,7 @@ filterForm.addEventListener('submit',function (event){
 
 
     // check if preferred number of days is possible with schedules
+    // if any days at uni are included in unpref days -> false
     const filteredSchedules = [];
 
     for(const schedule of validSchedules){
@@ -53,41 +56,74 @@ filterForm.addEventListener('submit',function (event){
 
         const fitsWithinChosen = chosenETime <= earliestTime && chosenLTime >= latestTime;
 
-        if(daysAtUni.length == prefNoDays && daysAtUni.some(day => selectedDays.includes(day)) && fitsWithinChosen){
+        // !daysAtUni.some(day => unprefDays.includes(day)) if any days within the schedule are included in unwanted days -> false
+
+        if(daysAtUni.length == prefNoDays && !daysAtUni.some(day => unprefDays.includes(day)) && fitsWithinChosen){
             filteredSchedules.push(schedule);
         }
     }
 
+    currentSchedules = filteredSchedules;
     loadSchedules(filteredSchedules);
-
-    // if filteredSchedules length == 0 - then theres no schedules available for chosen filters
-    // prompt user
-
 });
 
+const viewMoreBtn = document.getElementById("vm-btn");
+viewMoreBtn.addEventListener("click", (event) => {
+    // console.log(schedules.length);
+    event.preventDefault();
+    createSchedBtns(currentSchedules);
+
+    // hide the button after loading all schedules
+    viewMoreBtn.setAttribute("disabled", true);
+    viewMoreBtn.style.display = "none";
+    return;
+});
 
 // Loads schedules that user can select to show in their schedule view
-function loadSchedules(validSchedules){
+function loadSchedules(schedules){
     // first check if theres any existing validSchedules
     const scheduleNotification = document.getElementById("schedule-notification");
-    if(validSchedules.length == 0){
+    
+    scheduleNotification.textContent = "Recommended Schedules";
+
+    // get a sample of given schedule
+    const shortenedSched = schedules.slice(0,5);
+
+    // create button to view more schedules if theres any more
+    
+    
+    if(schedules.length > 5){
+        
+        viewMoreBtn.removeAttribute("disabled");
+        viewMoreBtn.style.display = "block";
+
+        // listener
+        
+    }
+    else{
+        viewMoreBtn.setAttribute("disabled", true);
+        viewMoreBtn.style.display = "none";
+    }
+
+    // if theres no schedules return
+    if(schedules.length == 0){
         scheduleNotification.textContent = "Sorry! There are no possible schedules that fit within your parameters";
         return;
     }
 
-    scheduleNotification.textContent = "Recommended Schedules";
+    createSchedBtns(shortenedSched);
+    
+}
 
-
-    // get the schedule list
+function createSchedBtns(schedules){
     const scheduleList = document.getElementById("scheduleList");
-    const shortenedSched = validSchedules.slice(0,5);
-    for(const schedule of shortenedSched){
+    console.log(schedules);
+    for(const schedule of schedules){
         const scheduleBtn = document.createElement('button');
-        // scheduleBtn.value = schedule;
 
         // Days - earliest time, latest time
         const scheduleDetails = getScheduleDetails(schedule);
-        scheduleBtn.textContent = scheduleDetails[0] + " Earliest Time: " + scheduleDetails[1][0] + " Latest Time: " + scheduleDetails[1][1]
+        scheduleBtn.textContent = scheduleDetails[0] + " Earliest Time: " + scheduleDetails[1][0] + " Latest Time: " + scheduleDetails[1][1];
         scheduleBtn.className = "scheduleBtn"
         
         // add event listener for button to see if clicked
@@ -107,9 +143,9 @@ function loadSchedules(validSchedules){
             }
         });
 
-        scheduleList.appendChild(scheduleBtn)
-        
+        scheduleList.appendChild(scheduleBtn)     
     }
+
 }
 
 // gets details of schedule to preview what days at uni the schedule will have and the earliest and latest time
@@ -126,14 +162,9 @@ function getScheduleDetails(schedule){
     const earliestTime = times.reduce((earliest, current) => current < earliest ? current : earliest, times[0]);
     const latestTime = times.reduce((latest, current) => current > latest ? current : latest, times[0]);
     scheduleDetails.push([earliestTime, latestTime]);
-    
+
     return scheduleDetails;
 }
-
-  
-
-
-
 
 
 // finds the corresponding cell (row and column) according to time and day of timeslot 
