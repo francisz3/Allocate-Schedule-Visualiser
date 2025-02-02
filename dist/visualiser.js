@@ -117,7 +117,6 @@ function loadSchedules(schedules){
 
 function createSchedBtns(schedules){
     const scheduleList = document.getElementById("scheduleList");
-    console.log(schedules);
     for(const schedule of schedules){
         const scheduleBtn = document.createElement('button');
 
@@ -241,6 +240,7 @@ timeSlots.forEach(time => {
     // Create the time cell
     const timeCell = document.createElement("td");
     timeCell.textContent = time;
+    timeCell.style.paddingLeft = ".8rem";
     row.appendChild(timeCell);
 
     // Create cells for each day (Monday to Friday)
@@ -298,5 +298,5 @@ function loadUnitDropdowns(){
 // Sets schedule view default scroll position lower
 document.addEventListener("DOMContentLoaded", () => {
     const scrollableDiv = document.querySelector(".tableWrapper");
-    scrollableDiv.scrollTop = 325;  
+    scrollableDiv.scrollTop = 370;  
 });

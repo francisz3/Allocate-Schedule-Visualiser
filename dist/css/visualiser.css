@@ -1,20 +1,89 @@
 /* Table CSS */
-.main-container{
-    display:flex;
-    justify-content: space-around;
-    padding: 4rem;
+.navbar{
+    background-color: #7A71FF !important;
 }
 
-.schedule-container{
-    width: 80%;
+.navbar-brand{
+    font-weight: lighter;
+    color: #FEEEEE !important;
+}
+.main-container{
+    display:flex;
+}
+
+.view-man-container{
+    width: 72%;
+    background-color: #E6E0E0;
+}
+
+.view-man-wrap{
+    display: flex;
+    flex-direction: column;
+    margin: 1.5rem;
 }
 
 .filter-container{
-    width: 20%;
+    width: 28%;
+    padding:1rem;
+    background-color: #FEEEEE;
+    border-right: 2px solid #D9D9D9;
+    color: #675D5D;
 }
 
 .filter-form{
-    /* width: 20%; */
+    margin: 0.8rem;
+}
+
+.filter-form > *{
+    margin: 0.4rem 0 .4rem 0;
+}
+
+.filter-form > p{
+    font-size: .85rem;
+    font-weight: light;
+}
+
+.filter-form > div > div > label{
+    font-size: .85rem;
+}
+.filter-form > select{
+    width: 100%;
+    font-size: 0.85rem;
+}
+
+.el-dropdown-grp{
+    display: flex;
+    flex-direction: row;
+    width:100%;
+    
+}
+
+.el-dropdown-grp > select {
+    font-size: 0.85rem;
+}
+
+#filterBtn{
+    width:100%;
+    background-color: #7A71FF !important;
+    font-weight: lighter;
+    font-size: 0.85rem;
+}
+
+#schedule-info{
+    margin: 0.8rem;
+}
+
+#schedule-info > *{
+    width: 100%;
+}
+
+#schedule-notification{
+    font-weight: lighter;
+}
+#vm-btn {
+    background-color: #7A71FF !important;
+    font-weight: lighter;
+    font-size: 0.85rem;
 }
 
 
@@ -23,6 +92,8 @@
     width:100%;
     border-spacing: 1px;
     table-layout: fixed;
+    background-color: #FEEEEE;
+    font-weight: lighter;
 }
 
 /* scrollable table css */
@@ -39,8 +110,10 @@ thead tr th {
 }
 
 th{
-    background-color: white;
+    background-color: #FEEEEE;
     z-index: 2;
+    font-weight: 200;
+    font-size: 0.85rem;
 }
 
 /* table rows need to be uniform (Wednesday) */
@@ -50,15 +123,18 @@ th{
 .sched-table > tbody > tr > td {
     vertical-align: top;
     position: relative;
-    height: 40px;
+    height: 45px;
     align-items: start;
+    border: 0.8px #D9D9D9 solid;
+    align-content: end;
+    font-size: 0.95rem;
 }
 
 .schedule-list{
     list-style-type: none;
     padding: 0;
     /* change later */
-    height: 260px;
+    height: 160px;
     overflow-y: auto;
 }
 
@@ -69,15 +145,15 @@ th{
 
 .timeslot {
     color: white;
-    background-color: #88A0A8;
-    opacity: 90%;
+    background-color: #7A71FF;
+    opacity: 85%;
     width: 100%;
     height: 100%;
     position: absolute;   
+    font-size: 0.75rem;
 }
 
 .manual-container{
     display: flex;
     flex-direction: column;
 }
-
