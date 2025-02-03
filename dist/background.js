@@ -21910,6 +21910,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       const url = message.url;
       const tab = await chrome.tabs.create({ url: url });
 
+      
       // connect Puppeteer to the tab
       const browser = await connect({
         transport: await ExtensionTransport.connectTab(tab.id),
@@ -21923,10 +21924,16 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       });
     
       await page.setViewport({ width, height });
-   
-
-      // Scrape the page title as an example
+      
+      // Scrape the page title to identify if they have loaded into sign in page
       await page.waitForSelector('title');
+      const pageTitle = await page.evaluate(() => document.title);
+
+      if(pageTitle.toLowerCase().includes("sign in")){
+       chrome.tabs.sendMessage(tab.id, { action: "notLoggedIn" });
+        browser.disconnect();
+        return;
+      }
 
       // gets the subject list to find each href of subject
       await page.waitForSelector('.subject-list');
