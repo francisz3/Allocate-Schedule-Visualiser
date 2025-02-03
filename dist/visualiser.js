@@ -107,7 +107,7 @@ function loadSchedules(schedules){
 
     // if theres no schedules return
     if(schedules.length == 0){
-        scheduleNotification.textContent = "Sorry! There are no possible schedules that fit within your parameters";
+        scheduleNotification.textContent = "Sorry! There are no possible schedules that fit within your parameters.";
         return;
     }
 
@@ -338,5 +338,5 @@ function loadUnitDropdowns(){
 // Sets schedule view default scroll position lower
 document.addEventListener("DOMContentLoaded", () => {
     const scrollableDiv = document.querySelector(".tableWrapper");
-    scrollableDiv.scrollTop = 370;  
+    scrollableDiv.scrollTop = 360;  
 });

@@ -21926,12 +21926,13 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       await page.setViewport({ width, height });
       
       // Scrape the page title to identify if they have loaded into sign in page
-      await page.waitForSelector('title');
+      await page.waitForSelector('title', { timeout: 5000 }); 
       const pageTitle = await page.evaluate(() => document.title);
-
+      
       if(pageTitle.toLowerCase().includes("sign in")){
-       chrome.tabs.sendMessage(tab.id, { action: "notLoggedIn" });
-        browser.disconnect();
+        await page.evaluate(() => {
+          alert("Please log into Allocate before using the extension, then try going into the extension and then pressing 'Visualize Schedule' again");
+        });
         return;
       }
 
@@ -21966,11 +21967,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       }, semester);
       
       if (!classesHref) {
-        chrome.runtime.sendMessage({
-            action: "noUnitsFound",
-            semester: message.semester
+        await page.evaluate(() => {
+          alert("No units found for the selected semester. Please select another semester with units");
         });
-        chrome.tabs.sendMessage(tab.id, { action: "noUnitsFound" });
         browser.disconnect();
         return;
       }
@@ -21982,6 +21981,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
         // go to each page of students classes
         await page.goto(url + classesHref[i]);
+        chrome.tabs.sendMessage(tab.id, { action: "success" });
 
         // wait for the table to load
         await page.waitForSelector('.aplus-table');
@@ -22039,6 +22039,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       });
 
       browser.disconnect();
+      chrome.tabs.remove(tab.id);
     } catch (error) {
       console.error("Error during Puppeteer operation:", error);
       

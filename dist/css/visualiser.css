@@ -1,4 +1,4 @@
-/* Table CSS */
+/* Navbar */
 .navbar{
     background-color: #7A71FF !important;
 }
@@ -7,6 +7,15 @@
     font-weight: lighter;
     color: #FEEEEE !important;
 }
+
+.save-btn {
+    font-weight: 200 !important;
+    color: white !important;
+    border: 1px solid white !important;
+}
+
+/* Main containers */
+
 .main-container{
     display:flex;
 }
@@ -14,6 +23,7 @@
 .view-man-container{
     width: 72%;
     background-color: #E6E0E0;
+    height: 100vh;
 }
 
 .view-man-wrap{
@@ -22,6 +32,7 @@
     margin: 1.5rem;
 }
 
+/* Filter containers */
 .filter-container{
     width: 28%;
     padding:1rem;
@@ -118,9 +129,6 @@ th{
     font-size: 0.85rem;
 }
 
-/* table rows need to be uniform (Wednesday) */
-
-
 /* Make sure all timeslots start at the top */
 .sched-table > tbody > tr > td {
     vertical-align: top;
@@ -135,8 +143,7 @@ th{
 .schedule-list{
     list-style-type: none;
     padding: 0;
-    /* change later */
-    height: 18rem;
+    height: 17rem;
     overflow-y: auto;
 }
 
