@@ -115,14 +115,40 @@ function loadSchedules(schedules){
     
 }
 
+
 function createSchedBtns(schedules){
     const scheduleList = document.getElementById("scheduleList");
+    
+
     for(const schedule of schedules){
         const scheduleBtn = document.createElement('button');
 
         // Days - earliest time, latest time
         const scheduleDetails = getScheduleDetails(schedule);
-        scheduleBtn.textContent = scheduleDetails[0] + " Earliest Time: " + scheduleDetails[1][0] + " Latest Time: " + scheduleDetails[1][1];
+
+        // add day pill which includes the day and frequency of classes in each day
+        const dayPillGrp = document.createElement("span");
+        dayPillGrp.className = "day-pill-grp";
+        Object.entries(scheduleDetails[0]).forEach(([key,value]) => {
+            const dayPill = document.createElement("span");
+            dayPill.className = "day-pill";
+            dayPill.textContent = key + " " + value;
+            dayPillGrp.appendChild(dayPill);
+        });
+        scheduleBtn.appendChild(dayPillGrp);
+        // earliest/latest start time description
+        const timeDescriptionGrp = document.createElement("span");
+        timeDescriptionGrp.className = "time-description-group"
+        const esDescription = document.createElement("p");
+        const lsDescription = document.createElement("p");
+
+        esDescription.textContent = "Earliest start time: " + scheduleDetails[1][0];
+        lsDescription.textContent = "Latest start time: " + scheduleDetails[1][1];
+
+        timeDescriptionGrp.appendChild(esDescription);
+        timeDescriptionGrp.appendChild(lsDescription);
+        scheduleBtn.appendChild(timeDescriptionGrp);
+
         scheduleBtn.className = "scheduleBtn"
         
         // add event listener for button to see if clicked
@@ -150,10 +176,21 @@ function createSchedBtns(schedules){
 // gets details of schedule to preview what days at uni the schedule will have and the earliest and latest time
 function getScheduleDetails(schedule){
     const scheduleDetails = [];
-
+    const daysOrder = ["Mon", "Tue", "Wed", "Thu", "Fri"]
     // Find which days the student has to be at uni
-    const daysAtUni = [... new Set(schedule.map(timeslot => timeslot.day))];
-    scheduleDetails.push(daysAtUni);
+    // const daysAtUni = [... new Set(schedule.map(timeslot => timeslot.day))];
+    // Count occurrences of each day
+    const dayCounts = schedule.reduce((acc, item) => {
+        acc[item.day] = (acc[item.day] || 0) + 1;
+        return acc;
+    }, {});
+
+    // Sort the result based on the daysOrder
+    const sortedDayCounts = Object.fromEntries(
+        Object.entries(dayCounts).sort((a, b) => daysOrder.indexOf(a[0]) - daysOrder.indexOf(b[0]))
+    );
+
+    scheduleDetails.push(sortedDayCounts);
 
     // Find the earliest and latest time
     const times = schedule.map(timeslot => timeslot.time);
@@ -257,8 +294,9 @@ timeSlots.forEach(time => {
 function loadUnitDropdowns(){
     // Generate dropdowns according to units
     timeslotGroups.forEach((unitGroup, index) => {
-    
+        const unitDropGroup = document.createElement("div");
         const unitDropdown = document.createElement("select");
+        unitDropdown.className = "form-select";
         unitDropdown.id = `unitDropdown-${index}`;
         const unitDropdownLabel = document.createElement("label");
     
@@ -272,8 +310,10 @@ function loadUnitDropdowns(){
         unitDropdownLabel.textContent = unitGroup[0].classType + " " + unitGroup[0].description;
         unitDropdownLabel.setAttribute('for', unitDropdown.id);
         
-        manualContainer.appendChild(unitDropdownLabel);
-        manualContainer.appendChild(unitDropdown);
+        unitDropGroup.appendChild(unitDropdownLabel);
+        unitDropGroup.appendChild(unitDropdown);
+        unitDropGroup.className = "unit-drop-grp";
+        manualContainer.appendChild(unitDropGroup);
 
         // add event listener for each unit group
 
