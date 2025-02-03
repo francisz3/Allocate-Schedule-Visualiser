@@ -17,10 +17,6 @@
       "matches": ["<all_urls>"],
       "js": ["content.js"],
       "css": ["css/overlay.css"]
-    },
-    {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["bootstrap/js/bootstrap.min.js"]
     }
   ]
 

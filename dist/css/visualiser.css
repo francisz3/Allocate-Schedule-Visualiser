@@ -201,6 +201,7 @@ th{
     border: none;
     color: #675D5D;
     padding: .5rem;
+    border: 1.8px solid #D9D9D9;
 }
 
 .day-pill-grp{
@@ -229,4 +230,31 @@ th{
 
 .time-description-group > *{
     margin: 0.45rem;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
+    background-color: #FEEEEE;
+}
+
+.modal-body > svg {
+    align-self: center;
+    margin: 2rem;
+}
+.modal-body > p{
+    color: #675D5D;
+    padding: 0 1rem 1rem 1rem;
+}
+
+.modal-body > button {
+    font-weight: 200;
+    color: white;
+    background-color: #7A71FF;
+    width: 100%;
+    --bs-btn-hover-color: white;
+    --bs-btn-hover-bg: #7A71FF;
+
 }

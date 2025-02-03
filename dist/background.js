@@ -21926,6 +21926,10 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       await page.setViewport({ width, height });
       
       // Scrape the page title to identify if they have loaded into sign in page
+
+      // wait for navigation - they might be logged in already but it there's cases where it might navigate
+      await page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 5000 });
+
       await page.waitForSelector('title', { timeout: 5000 }); 
       const pageTitle = await page.evaluate(() => document.title);
       

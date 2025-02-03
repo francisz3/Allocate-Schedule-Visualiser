@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const overlayContainer = document.createElement("div");
         overlayContainer.className = "overlay-notif"
         const overlaySpan = document.createElement("span");
-        overlaySpan.textContent = "Retrieving times for your units";
+        overlaySpan.textContent = "Retrieving the timeslots from your units";
 
         // add spinner
         const spinner = document.createElement("div");
