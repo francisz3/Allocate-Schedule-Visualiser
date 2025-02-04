@@ -5,21 +5,23 @@ let currentSchedules = null;
 
 const manualContainer = document.querySelector(".manual-container");
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Get data from query params
-    const queryParams = new URLSearchParams(window.location.search);
-    validSchedules = JSON.parse(queryParams.get("data"));
-    timeslotGroups = JSON.parse(queryParams.get("timeslots"));
-    currentSchedules = validSchedules;
+chrome.storage.local.get(["validSchedules", "allTimeslots"], (result) => {
+    if (chrome.runtime.lastError) {
+      console.error("Error retrieving schedule data:", chrome.runtime.lastError);
+    } else {
+      validSchedules = result.validSchedules || [];
+      timeslotGroups = result.allTimeslots || [];
 
-    // load initial sample schedules
-    loadSchedules(validSchedules);
+      currentSchedules = validSchedules;
+
+      // load initial sample schedules
+      loadSchedules(validSchedules);
 
     // load dropdowns for manual edit
-    loadUnitDropdowns();
+      loadUnitDropdowns();
+    }
 });
 
-// Filters schedules according to users desired days + no days + time at uni.
 const filterForm = document.getElementById("filterForm");
 filterForm.addEventListener('submit',function (event){
     event.preventDefault();
@@ -41,10 +43,14 @@ filterForm.addEventListener('submit',function (event){
     const chosenETime = document.getElementById('earliestDropdown').value;
     const chosenLTime = document.getElementById('latestDropdown').value;
 
-
     // check if preferred number of days is possible with schedules
     // if any days at uni are included in unpref days -> false
     const filteredSchedules = [];
+    
+    //flag to check if any time was able to fit within params
+    let timeErrors = false;
+    let noDaysErrors = false;
+    let prefDayErrors = false;
 
     for(const schedule of validSchedules){
         const daysAtUni = [... new Set(schedule.map(timeslot => timeslot.day))];
@@ -56,20 +62,69 @@ filterForm.addEventListener('submit',function (event){
 
         const fitsWithinChosen = chosenETime <= earliestTime && chosenLTime >= latestTime;
 
+        if(fitsWithinChosen){
+            timeErrors = true;
+        }
+
+        if(daysAtUni.length == prefNoDays){
+            noDaysErrors = true;
+        }
+
+        if(!daysAtUni.some(day => unprefDays.includes(day))){
+            prefDayErrors = true;
+        }
+
         // !daysAtUni.some(day => unprefDays.includes(day)) if any days within the schedule are included in unwanted days -> false
 
         if(daysAtUni.length == prefNoDays && !daysAtUni.some(day => unprefDays.includes(day)) && fitsWithinChosen){
             filteredSchedules.push(schedule);
+            // switch check to true
         }
     }
 
+    // keep track of schedules
+
     currentSchedules = filteredSchedules;
+
+    handleParamErrors(timeErrors, noDaysErrors, prefDayErrors, filteredSchedules);
     loadSchedules(filteredSchedules);
+
 });
+
+
+function handleParamErrors(timeErrors, noDaysErrors, prefDayErrors, filteredSchedules){
+    const scheduleParam = analyzeSchedules(validSchedules);
+    // get error container from html
+    const errorMessages = [];
+    const errorContainer = document.getElementById("errorMessages");
+    errorContainer.innerHTML = "";
+
+    // if flag for timeErrors is still false -> push error
+    if(!timeErrors){
+        errorMessages.push(`- Your chosen time constraints do not fit within your possible uni schedules`);
+    }
+
+    if(!noDaysErrors){
+        errorMessages.push(`- Minimum days for your possible schedules are ${scheduleParam.minDaysAtUni} days`)
+    }
+
+    if(!prefDayErrors){
+        errorMessages.push(`- Your schedule requires attendance on ${scheduleParam.mandatoryDays.join(", ")}.`)
+    }
+
+    else if(filteredSchedules.length == 0 && timeErrors && noDaysErrors && prefDayErrors){
+        errorMessages.push(`- Your selected time range is too restrictive for the chosen number of days. Try increasing the available days.`)
+    }
+
+    if(errorMessages.length > 0){
+        loadSchedules([]);
+        errorContainer.innerHTML = errorMessages.map(err => `<p style="color: red;">${err}</p>`).join("");
+    }
+}
 
 const viewMoreBtn = document.getElementById("vm-btn");
 viewMoreBtn.addEventListener("click", (event) => {
-    // console.log(schedules.length);
+
     event.preventDefault();
     createSchedBtns(currentSchedules);
 
@@ -84,7 +139,7 @@ function loadSchedules(schedules){
     // first check if theres any existing validSchedules
     const scheduleNotification = document.getElementById("schedule-notification");
     
-    scheduleNotification.textContent = "Filtered Results:";
+    scheduleNotification.textContent = `Filtered Results: ${schedules.length} Results`;
 
     // get a sample of given schedule
     const shortenedSched = schedules.slice(0,5);
@@ -225,10 +280,8 @@ function getCellForTimeSlot(time, day, duration, description, classType, locatio
 
     // clear dropdown if theres a 1-1 conflict
     const existingTimeslot = cell.querySelector("div");
-    console.log(existingTimeslot);
     if(existingTimeslot){
         const conflictUnit = document.getElementById(`unitDropdown-${existingTimeslot.id.replace(/\s+/g, "")}`)
-        console.log(existingTimeslot.id);
         conflictUnit.value = "";
     }
 
@@ -253,4 +306,29 @@ function getCellForTimeSlot(time, day, duration, description, classType, locatio
     timeslotDiv.style.height = 100 * parseInt(duration) + "%";
     timeslotDiv.id = classType + "-" + description;
     
+}
+
+
+function analyzeSchedules(validSchedules) {
+    if (validSchedules.length === 0) {
+        return;
+    }
+
+    // Extract all unique days from schedules
+    const allDays = [...new Set(validSchedules.flatMap(schedule => schedule.map(timeslot => timeslot.day)))];
+
+    // Find mandatory days (appear in ALL schedules)
+    const mandatoryDays = allDays.filter(day =>
+        validSchedules.every(schedule => schedule.some(timeslot => timeslot.day === day))
+    );
+
+    // Find the minimum number of days required in any schedule
+    const minDaysAtUni = Math.min(...validSchedules.map(schedule =>
+        new Set(schedule.map(timeslot => timeslot.day)).size
+    ));
+
+    return {
+        mandatoryDays,
+        minDaysAtUni,
+    };
 }

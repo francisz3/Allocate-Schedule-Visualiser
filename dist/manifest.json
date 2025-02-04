@@ -9,7 +9,7 @@
  },
   "version": "1.0",
   "description": "A Chrome extension that retrieves all your unit timeslots from allocate, and helps visualise your best suited uni schedule.",
-  "permissions": ["scripting",  "debugger"],
+  "permissions": ["scripting",  "debugger", "storage"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js",

@@ -51,7 +51,7 @@
 }
 
 .filter-form > *{
-    margin: 0.4rem 0 .4rem 0;
+    margin: 0.8vh 0 0.8vh 0;
 }
 
 .filter-form > p{
@@ -116,7 +116,7 @@
 
 /* scrollable table css */
 .tableWrapper{
-    height: 500px;
+    height: 60vh;
     overflow-y: auto;
     display: flex;
     justify-content: center;
@@ -138,7 +138,7 @@ th{
 .sched-table > tbody > tr > td {
     vertical-align: top;
     position: relative;
-    height: 45px;
+    height: 3rem;
     align-items: start;
     border: 0.8px #D9D9D9 solid;
     align-content: end;
@@ -148,7 +148,7 @@ th{
 .schedule-list{
     list-style-type: none;
     padding: 0;
-    height: 16rem;
+    height: 34vh;
     overflow-y: auto;
 }
 
@@ -175,12 +175,12 @@ th{
     padding: 1rem;
     margin: 1rem 0 1rem 0;
     border-radius: .5rem;
+    height: 25vh;
 }
 
 .unit-drop-grp{
     display: flex;
     flex-direction: column;
-    width: 13rem;
 }
 
 
@@ -194,6 +194,7 @@ th{
 
 .unit-drop-grp > select {
     font-size: 0.8rem;
+    aspect-ratio: 7/1;
 }
 
 .scheduleBtn {

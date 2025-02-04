@@ -21928,7 +21928,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       // Scrape the page title to identify if they have loaded into sign in page
 
       // wait for navigation - they might be logged in already but it there's cases where it might navigate
-      await page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 5000 });
+      await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
       await page.waitForSelector('title', { timeout: 8000 }); 
       const pageTitle = await page.evaluate(() => document.title);
@@ -22038,8 +22038,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       const visUrl = chrome.runtime.getURL("visualiser.html");
       const queryParams = new URLSearchParams({ data: JSON.stringify(validSchedules), timeslots: JSON.stringify(allTimeslots) });
       
-      chrome.tabs.create({
-        url: `${visUrl}?${queryParams.toString()}`
+      chrome.storage.local.set({
+        validSchedules: validSchedules,
+        allTimeslots: allTimeslots
+      }, () => {
+        chrome.tabs.create({ url: visUrl });
       });
 
       browser.disconnect();
