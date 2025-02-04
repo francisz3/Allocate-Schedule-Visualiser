@@ -8,6 +8,11 @@
     color: #FEEEEE !important;
 }
 
+.navbar-brand > img{
+    margin-right: 7px;
+}
+
+
 .save-btn {
     font-weight: 200 !important;
     color: white !important;

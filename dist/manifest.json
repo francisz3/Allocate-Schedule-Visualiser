@@ -1,6 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Allocate Schedule Visualiser",
+  "icons": {
+   "16": "logo.png",
+   "32": "logo.png",
+   "48": "logo.png",
+   "128": "logo.png"
+ },
   "version": "1.0",
   "description": "A Chrome extension that scrapes the timeslots of your classes using Puppeteer, to help visualise your best suited uni schedule.",
   "permissions": ["scripting", "tabs", "debugger"],
@@ -19,6 +25,7 @@
       "css": ["css/overlay.css"]
     }
   ]
+  
 
 
 }
