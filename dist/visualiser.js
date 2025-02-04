@@ -223,6 +223,22 @@ function getCellForTimeSlot(time, day, duration, description, classType, locatio
     const timeIndex = parseInt(time.substring(0,2));
     const cell = rows[timeIndex].querySelectorAll('td')[dayIndex];
 
+    // clear dropdown if theres a 1-1 conflict
+    const existingTimeslot = cell.querySelector("div");
+    console.log(existingTimeslot);
+    if(existingTimeslot){
+        const conflictUnit = document.getElementById(`unitDropdown-${existingTimeslot.id.replace(/\s+/g, "")}`)
+        console.log(existingTimeslot.id);
+        conflictUnit.value = "";
+    }
+
+    //make sure change in timeslot changes the dropdown
+    const reflectDropdown = document.getElementById(`unitDropdown-${classType}-${description.replace(/\s+/g, "")}`);
+    const reflectOption = document.getElementById(`${day}-${time}-${location}`);
+    reflectDropdown.value = reflectOption.value;
+
+    
+    
     // after finding cell - add div (as timeslot) and corresponding details to it
     cell.innerHTML = `<div class="timeslot">${classType} ${description} ${time} ${location}</div>`; 
     

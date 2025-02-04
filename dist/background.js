@@ -21930,7 +21930,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       // wait for navigation - they might be logged in already but it there's cases where it might navigate
       await page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 5000 });
 
-      await page.waitForSelector('title', { timeout: 5000 }); 
+      await page.waitForSelector('title', { timeout: 8000 }); 
       const pageTitle = await page.evaluate(() => document.title);
       
       if(pageTitle.toLowerCase().includes("sign in")){
@@ -21941,7 +21941,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       }
 
       // gets the subject list to find each href of subject
-      await page.waitForSelector('.subject-list');
+      await page.waitForSelector('.subject-list', {timeout: 5000});
 
       // instatiate the semester
       const semester = parseInt(message.semester);

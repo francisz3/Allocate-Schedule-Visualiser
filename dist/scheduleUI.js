@@ -33,7 +33,7 @@ function loadUnitDropdowns(){
         const unitDropGroup = document.createElement("div");
         const unitDropdown = document.createElement("select");
         unitDropdown.className = "form-select";
-        unitDropdown.id = `unitDropdown-${index}`;
+        unitDropdown.id = `unitDropdown-${unitGroup[0].classType}-${unitGroup[0].description.replace(/\s+/g, "")}`;
         const unitDropdownLabel = document.createElement("label");
 
         //create placeholder option
@@ -48,6 +48,7 @@ function loadUnitDropdowns(){
         unitGroup.map(timeslot => {
             const timeslotOption = document.createElement("option");
             timeslotOption.textContent = timeslot.day + " @ " + timeslot.time + " (" + timeslot.location + ")";
+            timeslotOption.id = `${timeslot.day}-${timeslot.time}-${timeslot.location}`;
             timeslotOption.value = JSON.stringify(timeslot);
             unitDropdown.appendChild(timeslotOption);
         });
@@ -62,13 +63,14 @@ function loadUnitDropdowns(){
 
         // add event listener for each unit group
 
-        unitDropdown.addEventListener("change", function(){
+        unitDropdown.addEventListener("change", () => {
             const timeslotSelection = JSON.parse(unitDropdown.value);
 
             // clear existing timeslot from schedule view if present
             const existingTimeslot = document.getElementById(timeslotSelection.classType + "-" + timeslotSelection.description);
             if(existingTimeslot){
                 existingTimeslot.remove();
+                //update dropdown for existing
             }
             
             // add timeslot to schedule view
