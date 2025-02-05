@@ -12,10 +12,6 @@ window.addEventListener('DOMContentLoaded', () => {
         // Mark that the user has visited
         localStorage.setItem("hasVisited", "true");
     }
-
-    // notification for sample schedules
-    const scheduleNotification = document.getElementById("schedule-notification");
-    scheduleNotification.textContent = "Here's some schedules to get started!";
     
 });
 
@@ -23,18 +19,22 @@ window.addEventListener('DOMContentLoaded', () => {
 // Sets schedule view default scroll position lower
 document.addEventListener("DOMContentLoaded", () => {
     const scrollableDiv = document.querySelector(".tableWrapper");
-    scrollableDiv.scrollTop = 360;  
+    scrollableDiv.scrollTop = 320;  
 });
 
 // loads the dropdowns for units
 function loadUnitDropdowns(){
     // Generate dropdowns according to units
+    
     timeslotGroups.forEach((unitGroup, index) => {
         const unitDropGroup = document.createElement("div");
         const unitDropdown = document.createElement("select");
         unitDropdown.className = "form-select";
         unitDropdown.id = `unitDropdown-${unitGroup[0].classType}-${unitGroup[0].description.replace(/\s+/g, "")}`;
         const unitDropdownLabel = document.createElement("label");
+        unitDropdownLabel.style.borderLeft = `3px solid ${colorCode[`${unitGroup[0].classType}${unitGroup[0].description}`]}`;
+
+        
 
         //create placeholder option
         const placeholderOption = document.createElement("option");
@@ -65,7 +65,6 @@ function loadUnitDropdowns(){
 
         unitDropdown.addEventListener("change", () => {
             const timeslotSelection = JSON.parse(unitDropdown.value);
-
             // clear existing timeslot from schedule view if present
             const existingTimeslot = document.getElementById(timeslotSelection.classType + "-" + timeslotSelection.description);
             if(existingTimeslot){
@@ -74,7 +73,7 @@ function loadUnitDropdowns(){
             }
             
             // add timeslot to schedule view
-            getCellForTimeSlot(timeslotSelection.time, timeslotSelection.day, timeslotSelection.duration, timeslotSelection.description, timeslotSelection.classType, timeslotSelection.location );
+            getCellForTimeSlot(timeslotSelection);
 
             
         });

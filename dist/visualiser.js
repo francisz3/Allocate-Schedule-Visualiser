@@ -2,6 +2,7 @@
 let validSchedules = null;
 let timeslotGroups = null;
 let currentSchedules = null;
+let colorCode = {};
 
 const manualContainer = document.querySelector(".manual-container");
 
@@ -14,11 +15,19 @@ chrome.storage.local.get(["validSchedules", "allTimeslots"], (result) => {
 
       currentSchedules = validSchedules;
 
+      // get a number of colors based on the length of timeslotGroups.length / number of units
+      // ensure each of the colors are different and allow visibility for white text
+      createColorCode(timeslotGroups);
+
       // load initial sample schedules
       loadSchedules(validSchedules);
 
-    // load dropdowns for manual edit
+      // load dropdowns for manual edit
       loadUnitDropdowns();
+      // notification for sample schedules
+      const scheduleNotification = document.getElementById("schedule-notification");
+
+      scheduleNotification.textContent = "Here's some schedules to get started!";
     }
 });
 
@@ -113,7 +122,7 @@ function handleParamErrors(timeErrors, noDaysErrors, prefDayErrors, filteredSche
     }
 
     else if(filteredSchedules.length == 0 && timeErrors && noDaysErrors && prefDayErrors){
-        errorMessages.push(`- Your selected time range is too restrictive for the chosen number of days. Try increasing the available days.`)
+        errorMessages.push(`- Your selected time range is too restrictive for the chosen number of days. Try increasing/changing your available days.`)
     }
 
     if(errorMessages.length > 0){
@@ -144,15 +153,10 @@ function loadSchedules(schedules){
     // get a sample of given schedule
     const shortenedSched = schedules.slice(0,5);
 
-    // create button to view more schedules if theres any more
-    
-    if(schedules.length > 5){
-        
+    // Load view more button if the possible schedule length is greater than 5
+    if(schedules.length > 5){       
         viewMoreBtn.removeAttribute("disabled");
-        viewMoreBtn.style.display = "block";
-
-        // listener
-        
+        viewMoreBtn.style.display = "block";        
     }
     else{
         viewMoreBtn.setAttribute("disabled", true);
@@ -216,10 +220,11 @@ function createSchedBtns(schedules){
             currentSchedule.forEach((timeslot) => timeslot.remove());
 
             // put each timeslot of the schedule onto a corresponding cell
-            for(const timeslot of schedule){
+            schedule.forEach((timeslot) => {
                 // get row and column that corresponds to timeslot
-                getCellForTimeSlot(timeslot.time, timeslot.day, timeslot.duration, timeslot.description, timeslot.classType, timeslot.location)
-            }
+                getCellForTimeSlot(timeslot);
+            });
+            
         });
 
         scheduleList.appendChild(scheduleBtn)     
@@ -258,12 +263,12 @@ function getScheduleDetails(schedule){
 
 
 // finds the corresponding cell (row and column) according to time and day of timeslot 
-function getCellForTimeSlot(time, day, duration, description, classType, location){
+function getCellForTimeSlot(timeslot){
     // Day list
     const dayList = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
 
     // Get index of day
-    const dayIndex = dayList.indexOf(day) + 1;
+    const dayIndex = dayList.indexOf(timeslot.day) + 1;
 
     // error handling if day is invalid
     if (dayIndex === -1) {
@@ -275,7 +280,7 @@ function getCellForTimeSlot(time, day, duration, description, classType, locatio
     const rows = document.querySelectorAll('.sched-table tbody tr');
 
     // find the row that corresponds to the time
-    const timeIndex = parseInt(time.substring(0,2));
+    const timeIndex = parseInt(timeslot.time.substring(0,2));
     const cell = rows[timeIndex].querySelectorAll('td')[dayIndex];
 
     // clear dropdown if theres a 1-1 conflict
@@ -286,25 +291,28 @@ function getCellForTimeSlot(time, day, duration, description, classType, locatio
     }
 
     //make sure change in timeslot changes the dropdown
-    const reflectDropdown = document.getElementById(`unitDropdown-${classType}-${description.replace(/\s+/g, "")}`);
-    const reflectOption = document.getElementById(`${day}-${time}-${location}`);
+    const reflectDropdown = document.getElementById(`unitDropdown-${timeslot.classType}-${timeslot.description.replace(/\s+/g, "")}`);
+    const reflectOption = document.getElementById(`${timeslot.day}-${timeslot.time}-${timeslot.location}`);
     reflectDropdown.value = reflectOption.value;
 
     
     
     // after finding cell - add div (as timeslot) and corresponding details to it
-    cell.innerHTML = `<div class="timeslot">${classType} ${description} ${time} ${location}</div>`; 
+    cell.innerHTML = `<div class="timeslot">${timeslot.classType} ${timeslot.description} ${timeslot.time} ${timeslot.location}</div>`; 
     
 
     // check if timeslot is ends in :30 :60
     const timeslotDiv = cell.querySelector('.timeslot');
-    const minutesPastHour = parseInt(time.substring(3,5))
+    const minutesPastHour = parseInt(timeslot.time.substring(3,5))
     timeslotDiv.style.top = (( minutesPastHour/60 ) * 100) + "%";
+
+    // make the backgroundColor the 
+    timeslotDiv.style.backgroundColor = colorCode[`${timeslot.classType}${timeslot.description}`];
 
     //multiply height of timeslot by duration
     
-    timeslotDiv.style.height = 100 * parseInt(duration) + "%";
-    timeslotDiv.id = classType + "-" + description;
+    timeslotDiv.style.height = 100 * parseInt(timeslot.duration) + "%";
+    timeslotDiv.id = timeslot.classType + "-" + timeslot.description;
     
 }
 
@@ -332,3 +340,35 @@ function analyzeSchedules(validSchedules) {
         minDaysAtUni,
     };
 }
+
+function createColorCode(timeslotGroups) {
+    colorList = [
+        "#FF0000", // Red
+        "#FF7F00", // Orange
+        "#CFD302", // Yellow
+        "#085E4E", // Green
+        "#2189CA", // Blue
+        "#4B0082", // Indigo
+        "#8B00FF", // Violet
+        "#FF1493", // Deep Pink
+        "#211377", // Deep Blue
+        "#762117", // Deep Red
+    ];
+    
+    timeslotGroups.forEach((unit,index) => {
+        const colorId = unit[0].classType + unit[0].description;
+        
+        // if number of units are greater than the colorList due to overload or such, then just give random colors
+        if(index >= colorList.length){
+            colorCode[colorId] = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+        }
+        else{
+            colorCode[colorId] = colorList[index];
+        }
+        
+    });
+
+}
+
+// ["#272A4F","#355070","#6d597a","#5b8071","#e69d75","#e56b6f","#854852","#61303b"];
+// ["#bf4949","#4b982d","#472073","#3977bd","#420826","#085e4e","#8c6820","#c53d9a"];

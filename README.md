@@ -35,16 +35,19 @@ Allocate Schedule Visualizer is a Chrome extension that helps you easily visuali
 
 4. The extension will retrieve all timeslot data from your units and open up a new tab.
    ![ASV Extension retrieving timeslots](retrieval.png)
-
-5. Use the filters on the sidebar according to your preferences and select the one that best fits your needs.
    ![Visualiser/Schedule page for ASV](visualiser.png)
+5. Use the filters on the sidebar according to your preferences and select the one that best fits your needs.
+   ![Filtering through schedules](filter.png)
 6. If you want to put in your timeslots manually, there are dropdowns below to see how each unit fits in your schedule.
+   ![Manual allocate](manual.png)
 
 ## Important Notes
 
-- This chrome extension is exclusively for university that use allocate and follow specific formatting on their timetable websites.
+- This chrome extension is exclusively for universities that use allocate and follow specific formatting on their timetable websites.
 
-- This includes RMIT Unviersity & Monash Univerisity
+- The current version is currently only available for RMIT
+
+- This extension uses Puppeteer, and its ability to scrape content and therefore collect and generate data will be highly dependant on the formatting of your allocate units. For instance, the extension will look for specific html elements that contain your unit elements, and if it's unable to find it due to any formatting irregularities, the extension will be unsuccesful in generating your schedules.
 
 ## Contact
 
