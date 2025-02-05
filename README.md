@@ -49,7 +49,11 @@ Allocate Schedule Visualizer is a Chrome extension that helps you easily visuali
 
 - The current version is currently only available for RMIT
 
-- This extension uses Puppeteer, and its ability to scrape content and therefore collect and generate data will be highly dependant on the formatting of your allocate units. For instance, the extension will look for specific html elements that contain your unit elements, and if it's unable to find it due to any formatting irregularities, the extension will be unsuccesful in generating your schedules.
+- This extension uses Puppeteer, and its ability to scrape content and therefore collect and generate data will be highly dependent on the formatting of your allocate units. For instance, the extension will look for specific html elements that contain your information on your units, and if it's unable to find it due to any formatting irregularities, the extension will be unsuccesful in generating your schedules.
+
+- Therefore, please be aware that the following cases are not supported in the current version.
+  - If you're enrolled in Summer semesters / Winter semesters
+  - Table headers do not include some of the following "Activity", "Day", "Time", "Campus", "Location", "Duration"," Description"
 
 ## Contact
 

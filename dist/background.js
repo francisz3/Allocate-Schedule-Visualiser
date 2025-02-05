@@ -21930,7 +21930,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       // wait for navigation - they might be logged in already but it there's cases where it might navigate
       await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
-      await page.waitForSelector('title', { timeout: 8000 }); 
+      await page.waitForSelector('title', { timeout: 5000 }); 
       const pageTitle = await page.evaluate(() => document.title);
       
       if(pageTitle.toLowerCase().includes("sign in")){
@@ -21947,6 +21947,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       const semester = parseInt(message.semester);
 
       const classesHref = await page.evaluate((semester) => {
+        // MIGHT HAVE TO CHANGE THIS - this assumes the student takes a normal semester 1 and 2
+        // i.e. this method doesn't take in account that the student maybe doing summer/winter semesters
+        // so there if they choose semester 1, but they have a summer semester 
         // gets the advanced filters subject list for semester 1 and 2
         const classElements = document.querySelectorAll('.subject-list');
 
@@ -22049,7 +22052,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       chrome.tabs.remove(tab.id);
     } catch (error) {
       console.error("Error during Puppeteer operation:", error);
-      
+      chrome.tabs.sendMessage(tab.id, { action: "fail" });
     }
   }
   return true; // Keeps the message channel open for asynchronous responses

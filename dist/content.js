@@ -22,4 +22,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         overlayContainer.appendChild(overlaySpan);
         document.body.appendChild(overlayContainer);
     }
+    else if(message.action === "fail"){
+        alert("Error finding the timeslots on your Allocate page");
+    }
 });
