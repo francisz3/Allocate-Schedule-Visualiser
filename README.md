@@ -29,9 +29,9 @@ Allocate Schedule Visualizer is a Chrome extension that helps you easily visuali
 1. Ensure you are logged into your allocate
 
 2. Click on the extension icon in the Chrome toolbar.
-   ![ASV Extension popup](popup.png)
 
 3. Input your university and the semester you desire for your schedule.
+   ![ASV Extension popup](popup.png)
 
 4. The extension will retrieve all timeslot data from your units and open up a new tab.
    ![ASV Extension retrieving timeslots](retrieval.png)
