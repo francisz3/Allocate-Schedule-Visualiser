@@ -22012,7 +22012,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 // time 2
                 const time = el.querySelectorAll('td')[thTexts.indexOf("Time")].textContent;
                 // location 4
-                const location = el.querySelectorAll('td')[thTexts.indexOf("Location")].textContent === "-" ? "Canvas" : el.querySelectorAll('td')[thTexts.indexOf("Location")].textContent;
+                const location = el.querySelectorAll('td')[thTexts.indexOf("Location")].textContent === "-" || el.querySelectorAll('td')[thTexts.indexOf("Location")].textContent.includes("Canvas") ? "Canvas" : el.querySelectorAll('td')[thTexts.indexOf("Location")].textContent;
                 // duration 5
                 const duration = el.querySelectorAll('td')[thTexts.indexOf("Duration")].textContent;
                 // description 7
