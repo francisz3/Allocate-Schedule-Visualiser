@@ -6,11 +6,13 @@ Allocate Schedule Visualizer is a Chrome extension that helps you easily visuali
 
 - Simple and intuitive UI to input your available class time slots.
 
-- Utilises the Puppeteer JS Library to scrape all your classes for each unit
+- Utilises the Puppeteer JS Library to scrape all your classes for each unit.
 
 - Automatically generates schedules based on the timeslots of your units.
 
 - Easily toggle between different scheduling options.
+
+- Download your schedule that you generated as a PNG.
 
 ## Installation
 
