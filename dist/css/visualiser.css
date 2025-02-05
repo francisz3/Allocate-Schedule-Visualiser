@@ -13,7 +13,7 @@
 }
 
 
-.save-btn {
+#save-btn {
     font-weight: 200 !important;
     color: white !important;
     border: 1px solid white !important;
@@ -158,7 +158,6 @@ th{
     margin:.5rem;
 }
 
-
 .timeslot {
     color: white;
     background-color: #7A71FF;
@@ -167,6 +166,7 @@ th{
     height: 100%;
     position: absolute;   
     font-size: 0.75rem;
+    z-index: 2;
 }
 
 .manual-container{

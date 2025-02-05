@@ -1,5 +1,6 @@
 ////////// Handles DOM manipulation and interactions //////////
 
+
 // tracks on load modal
 const initialModal = new bootstrap.Modal("#initial-modal");
 
@@ -72,6 +73,8 @@ function loadUnitDropdowns(){
                 //update dropdown for existing
             }
             
+            // enable save button
+            enableSaveBtn();
             // add timeslot to schedule view
             getCellForTimeSlot(timeslotSelection);
 
@@ -128,4 +131,34 @@ timeSlots.forEach(time => {
 
     // Append the row to the tbody
     tbody.appendChild(row);
+});
+
+// if timeslots are present enable save button
+// functionality to save tableToCapture
+
+const saveBtn = document.getElementById("save-btn");
+
+function enableSaveBtn(){
+    const saveBtn = document.getElementById("save-btn");
+    saveBtn.removeAttribute("disabled");
+}
+
+saveBtn.addEventListener('click', (event) =>{
+    event.preventDefault();
+
+    // get the table wrapper and scroll to the top
+    const tableWrapper = document.getElementsByClassName("tableWrapper")[0];
+    tableWrapper.scrollTop = 0;
+
+    // capture the table
+    const tableToCapture= document.getElementsByClassName("sched-table")[0];
+    setTimeout(() => {
+        html2canvas(tableToCapture).then((canvas) => {
+            const downloadLink = document.createElement("a");
+            downloadLink.href = canvas.toDataURL("image/png");
+            downloadLink.download = "uni-schedule-asv";
+            downloadLink.click();
+        });
+    },300);
+    
 });

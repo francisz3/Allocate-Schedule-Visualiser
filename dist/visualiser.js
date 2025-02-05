@@ -217,7 +217,10 @@ function createSchedBtns(schedules){
             // clear the schedule view before adding schedule
             const currentSchedule = document.querySelectorAll(".timeslot");
 
-            currentSchedule.forEach((timeslot) => timeslot.remove());
+            currentSchedule.forEach((timeslot) => timeslot.remove());  
+
+            // enable the save btn
+            enableSaveBtn();
 
             // put each timeslot of the schedule onto a corresponding cell
             schedule.forEach((timeslot) => {
