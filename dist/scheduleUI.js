@@ -33,7 +33,7 @@ function loadUnitDropdowns(){
         unitDropdown.className = "form-select";
         unitDropdown.id = `unitDropdown-${unitGroup[0].classType}-${unitGroup[0].description.replace(/\s+/g, "")}`;
         const unitDropdownLabel = document.createElement("label");
-        unitDropdownLabel.style.borderLeft = `3px solid ${colorCode[`${unitGroup[0].classType}${unitGroup[0].description}`]}`;
+        unitDropGroup.style.borderLeft = `3px solid ${colorCode[`${unitGroup[0].classType}${unitGroup[0].description}`]}`;
 
         
 

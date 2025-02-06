@@ -34,7 +34,7 @@
             <div class="container-fluid">
                 
               <a class="navbar-brand">
-                <img src="logo_white.png" width="35" height="35">
+                <img src="logos/logo_white.png" width="35" height="35">
                 ASV
               </a>
               <button class="btn save-btn" id="save-btn" type="submit" disabled>Save Schedule</button>
@@ -45,73 +45,96 @@
 
             <!-- Filtering -->
             <div class="filter-container">
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <button class="nav-link active" id="pills-filters-tab" data-bs-toggle="pill" data-bs-target="#pills-filters" type="button" role="tab" aria-controls="pills-filters" aria-selected="true">Filters</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button class="nav-link" id="pills-manual-tab" data-bs-toggle="pill" data-bs-target="#pills-manual" type="button" role="tab" aria-controls="pills-manual" aria-selected="false">Manual</button>
+                    </li>
+                  </ul>
+                  <div class="tab-content" id="pills-tabContent">
+
+                    <!-- Filter tab -->
+                    <div class="tab-pane fade show active" id="pills-filters" role="tabpanel" aria-labelledby="pills-filters-tab">
+                        <form id="filterForm" class="filter-form">
+
+                            <!-- Preferred Days -->
+                            <p>Preferred days</p>
+                            <div class="d-flex flex-wrap">
+                                <div class="mx-3 my-2">
+                                    <input type="checkbox" id="pref-mon" name="day-cb" value="Mon" checked="true">
+                                    <label for="pref-mon">Mon</label>
+                                </div>
+        
+                                <div class="mx-3 my-2">
+                                    <input type="checkbox" id="pref-tue" name="day-cb" value="Tue" checked="true">
+                                    <label for="pref-tue">Tue</label>
+                                </div>
+        
+                                <div class="mx-3 my-2">
+                                    <input type="checkbox" id="pref-wed" name="day-cb" value="Wed" checked="true">
+                                    <label for="pref-wed">Wed</label>
+                                </div>
+                                
+                                <div class="mx-3 my-2">
+                                    <input type="checkbox" id="pref-thu" name="day-cb" value="Thu" checked="true">
+                                    <label for="pref-thu">Thu</label>
+                                </div>
+                                
+                                <div class="mx-3 my-2">
+                                    <input type="checkbox" id="pref-fri" name="day-cb" value="Fri" checked="true">
+                                    <label for="pref-fri">Fri</label>
+                                </div>
+                                
+                            </div>        
                 
-                <form id="filterForm" class="filter-form">
-                    <h5 class="fw-light" style="border-bottom:2px solid #D9D9D9">Filters</h5>
-                    <!-- Preferred Days -->
-                    <p>Preferred days</p>
-                    <div class="d-flex flex-wrap">
-                        <div class="mx-3 my-2">
-                            <input type="checkbox" id="pref-mon" name="day-cb" value="Mon" checked="true">
-                            <label for="pref-mon">Mon</label>
-                        </div>
-
-                        <div class="mx-3 my-2">
-                            <input type="checkbox" id="pref-tue" name="day-cb" value="Tue" checked="true">
-                            <label for="pref-tue">Tue</label>
-                        </div>
-
-                        <div class="mx-3 my-2">
-                            <input type="checkbox" id="pref-wed" name="day-cb" value="Wed" checked="true">
-                            <label for="pref-wed">Wed</label>
-                        </div>
+                            <!-- Dropdown for number of days at uni -->
+                            <p>Preferred number of days at uni</p>
+                            <select id="noDaysDropdown" required="true" class="form-select">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3" selected="selected">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                
+                            <!-- Preferred time at uni -->
+                            <p>Preferred time at uni</p>
+                            <div class="el-dropdown-grp">
+                                <select id="earliestDropdown" class="form-select me-1" required="true">
+                                    <option value="" disabled selected>Earliest class start</option>
+                                </select>
+                    
+                                <select id="latestDropdown" class="form-select ms-1" required="true">
+                                    <option value="" disabled selected>Latest class start</option>
+                                </select>
+                            </div>
+                           
+                
+                            <button id="filterBtn" type="submit" class="btn btn-primary" class="btn btn-primary">Apply Filters</button>
+                        </form>
                         
-                        <div class="mx-3 my-2">
-                            <input type="checkbox" id="pref-thu" name="day-cb" value="Thu" checked="true">
-                            <label for="pref-thu">Thu</label>
+                        <!-- Schedule List -->
+                        <div id="schedule-info">
+                            <h6 id="schedule-notification" class="fw-light"></h6>
+                            <div id="errorMessages"></div>
+                            <ul class="schedule-list"id="scheduleList">
+                            </ul>
+                            <button class="btn btn-primary" id="vm-btn" style="display: none" disabled>View More</button>                        
                         </div>
-                        
-                        <div class="mx-3 my-2">
-                            <input type="checkbox" id="pref-fri" name="day-cb" value="Fri" checked="true">
-                            <label for="pref-fri">Fri</label>
-                        </div>
-                        
-                    </div>        
-        
-                    <!-- Dropdown for number of days at uni -->
-                    <p>Preferred number of days at uni</p>
-                    <select id="noDaysDropdown" required="true" class="form-select">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3" selected="selected">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-        
-                    <!-- Preferred time at uni -->
-                    <p>Preferred time at uni</p>
-                    <div class="el-dropdown-grp">
-                        <select id="earliestDropdown" class="form-select me-1" required="true">
-                            <option value="" disabled selected>Earliest class start</option>
-                        </select>
-            
-                        <select id="latestDropdown" class="form-select ms-1" required="true">
-                            <option value="" disabled selected>Latest class start</option>
-                        </select>
                     </div>
-                   
-        
-                    <button id="filterBtn" type="submit" class="btn btn-primary" class="btn btn-primary">Apply Filters</button>
-                </form>
+
+                    <!-- Manual tab section -->
+                    <div class="tab-pane fade" id="pills-manual" role="tabpanel" aria-labelledby="pills-manual-tab">
+                        <!-- Manual timeslot edit -->
+
+                        <div class="manual-container" >
+                            <!-- add dropdowns for each -->
+                        </div>
+                    </div>
+                  </div>
                 
-                <!-- Schedule List -->
-                <div id="schedule-info">
-                    <h6 id="schedule-notification" class="fw-light"></h6>
-                    <div id="errorMessages"></div>
-                    <ul class="schedule-list"id="scheduleList">
-                    </ul>
-                    <button class="btn btn-primary" id="vm-btn" style="display: none" disabled>View More</button>                        
-                </div>
             </div>
                         
             <!-- Schedule View -->
@@ -138,10 +161,9 @@
                         </table>
                     </div>
 
-                     <!-- Manual timeslot edit -->
-                    <div class="manual-container">
-                        <!-- add dropdowns for each -->
-                    </div>
+                     
+
+
                 </div>
             </div>            
         </div>
