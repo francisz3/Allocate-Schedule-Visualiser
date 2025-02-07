@@ -40,7 +40,7 @@ Allocate Schedule Visualizer is a Chrome extension that helps you easily visuali
    ![Visualiser/Schedule page for ASV](images/visualiser.png)
 5. Use the filters on the sidebar according to your preferences and select the one that best fits your needs.
    ![Filtering through schedules](images/filter.png)
-6. If you want to put in your timeslots manually, there are dropdowns below to see how each unit fits in your schedule.
+6. If you want to put in your timeslots manually, navigate to the manual tab where there are dropdown to see how each unit fits in your schedule.
    ![Manual allocate](images/manual.png)
 
 ## Important Notes

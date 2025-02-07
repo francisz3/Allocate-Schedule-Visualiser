@@ -99,7 +99,6 @@
 }
 
 #schedule-notification{
-    border-top: 2px solid #D9D9D9;
     padding-top: 10px;
     font-weight: lighter;
 }
@@ -175,10 +174,13 @@ th{
     position: absolute;   
     font-size: 0.75rem;
     z-index: 1;
+    overflow-y: auto;
+
 }
 
 .manual-container{
-
+    height: 40rem;
+    overflow-y: auto;
 }
 
 .unit-drop-grp{
@@ -292,3 +294,18 @@ th{
     padding-bottom: 0.5rem;
     border-bottom: 2px solid #D9D9D9;
 }
+
+.info-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-top:2px solid #D9D9D9;
+}
+
+.info-btn{
+ border: none;
+ background-color: #FEEEEE;
+
+}
+

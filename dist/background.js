@@ -21903,18 +21903,20 @@ function timeslotOverlap(startTime1, duration1, startTime2, duration2) {
 
 // Listens for messages from the popup or other parts of the extension
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+
   if (message.action === "scrape") {
+    const url = message.url;
+    const tab = await chrome.tabs.create({ url: url });
+    
+    // connect Puppeteer to the tab
+    const browser = await connect({
+      transport: await ExtensionTransport.connectTab(tab.id),
+    });
+    
     try {
       
       // create a new tab for allocate scrape
-      const url = message.url;
-      const tab = await chrome.tabs.create({ url: url });
-
       
-      // connect Puppeteer to the tab
-      const browser = await connect({
-        transport: await ExtensionTransport.connectTab(tab.id),
-      });
 
       // Get the page object and set the max height
       const [page] = await browser.pages();
@@ -21930,7 +21932,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       // wait for navigation - they might be logged in already but it there's cases where it might navigate
       await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
-      await page.waitForSelector('title', { timeout: 5000 }); 
+      await page.waitForSelector('title', { timeout: 2500 }); 
       const pageTitle = await page.evaluate(() => document.title);
       
       if(pageTitle.toLowerCase().includes("sign in")){
@@ -21941,7 +21943,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       }
 
       // gets the subject list to find each href of subject
-      await page.waitForSelector('.subject-list', {timeout: 5000});
+      await page.waitForSelector('.subject-list', {timeout: 400});
 
       // instatiate the semester
       const semester = parseInt(message.semester);
@@ -21992,11 +21994,16 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
         // wait for the table to load
         await page.waitForSelector('.aplus-table');
-
+        
         // get index of th elements
         
         // get all tr elements
         const timeslotGroup = await page.evaluate(() =>{
+            const descText = document.querySelectorAll("div.desc-text")[0];
+            const lines = descText.innerHTML.split('<br>').map(line => line.trim());
+            const description = lines[1].replace("amp;", "");
+            const classType = lines[2];
+
             // get all th elements to see where each column is
             const thElements = document.querySelectorAll('.aplus-table thead tr th');
             
@@ -22016,9 +22023,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 // duration 5
                 const duration = el.querySelectorAll('td')[thTexts.indexOf("Duration")].textContent;
                 // description 7
-                const description = el.querySelectorAll('td')[thTexts.indexOf("Description")].textContent;
+                // const description = el.querySelectorAll('td')[thTexts.indexOf("Description")].textContent;
                 // class type
-                const classType = el.getAttribute('id').split('|')[1];
+                // const classType = el.getAttribute('id').split('|')[1];
                 return {
                     day,
                     time,
@@ -22039,7 +22046,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       // create a new tab for visualiser html and send valid schedules to the page
       const visUrl = chrome.runtime.getURL("visualiser.html");
-      const queryParams = new URLSearchParams({ data: JSON.stringify(validSchedules), timeslots: JSON.stringify(allTimeslots) });
       
       chrome.storage.local.set({
         validSchedules: validSchedules,
@@ -22049,10 +22055,12 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       });
 
       browser.disconnect();
-      chrome.tabs.remove(tab.id);
+      // chrome.tabs.remove(tab.id);
     } catch (error) {
-      console.error("Error during Puppeteer operation:", error);
+
       chrome.tabs.sendMessage(tab.id, { action: "fail" });
+      console.error("Error during Puppeteer operation:", error);
+      
     }
   }
   return true; // Keeps the message channel open for asynchronous responses

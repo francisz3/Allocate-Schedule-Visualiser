@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "Allocate Schedule Visualiser",
   "icons": {
-   "16": "logos/logo_16.png",
-   "32": "logos/logo_32.png",
+   "16": "logos/logo.png",
+   "32": "logos/logo.png",
    "48": "logos/logo_48.png",
    "128": "logos/logo_128.png"
  },

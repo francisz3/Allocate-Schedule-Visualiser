@@ -8,19 +8,18 @@
 }
 
 .overlay-notif > span {
-    padding: 1rem;
     align-content: center;
     text-align: center;
     font-size: 1rem;
-    font-weight: 240;
+    font-weight: 140;
     width: 35%;
     height: 150px;
     background-color: #FEEEEE;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     border-radius: 5px;
-    color: #675D5D;
+    border: 1.5px solid #7A71FF;
+    
 }
 
 .spinner-border{
@@ -31,4 +30,10 @@
 .overlay-spinner{
     color: #7A71FF !important;
     opacity: 70%;
+}
+
+.retrieval-text {
+    background-color: #7A71FF;
+    color: #FEEEEE;
+    padding: 1rem;
 }

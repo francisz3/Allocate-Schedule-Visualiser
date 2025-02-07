@@ -11,7 +11,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const overlayContainer = document.createElement("div");
         overlayContainer.className = "overlay-notif"
         const overlaySpan = document.createElement("span");
-        overlaySpan.textContent = "Retrieving the timeslots from your units";
+
+
+        // p tag
+        const retrivalText = document.createElement('p');
+        retrivalText.textContent = "Retrieving the timeslots from your units";
+        retrivalText.className = "retrieval-text";
+        overlaySpan.appendChild(retrivalText);
 
         // add spinner
         const spinner = document.createElement("div");
@@ -23,6 +29,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         document.body.appendChild(overlayContainer);
     }
     else if(message.action === "fail"){
-        alert("Error finding the timeslots on your Allocate page");
+        alert("Error finding the timeslots on your Allocate page, please ensure your allocate has suitable format for the extension");
     }
 });
