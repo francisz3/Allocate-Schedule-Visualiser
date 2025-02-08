@@ -22055,7 +22055,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       });
 
       browser.disconnect();
-      // chrome.tabs.remove(tab.id);
+      chrome.tabs.remove(tab.id);
     } catch (error) {
 
       chrome.tabs.sendMessage(tab.id, { action: "fail" });

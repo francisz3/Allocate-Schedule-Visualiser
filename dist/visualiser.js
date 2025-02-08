@@ -122,7 +122,7 @@ function handleParamErrors(timeErrors, noDaysErrors, prefDayErrors, filteredSche
     }
 
     else if(filteredSchedules.length == 0 && timeErrors && noDaysErrors && prefDayErrors){
-        errorMessages.push(`- Your selected time range is too restrictive for the chosen number of days. Try increasing/changing your available days.`)
+        errorMessages.push(`- Your selected time range is too restrictive for the chosen number of days. Try increasing/changing your available days or extending the time range.`)
     }
 
     if(errorMessages.length > 0){
