@@ -7,7 +7,7 @@
    "48": "logos/logo_48.png",
    "128": "logos/logo_128.png"
  },
-  "version": "1.0",
+  "version": "1.1",
   "description": "A Chrome extension that retrieves all your unit timeslots from allocate, and helps visualise your best suited uni schedule.",
   "permissions": [ "debugger", "storage"],
   "background": {
@@ -19,7 +19,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["https://mytimetable.rmit.edu.au/odd/student*"],
       "js": ["content.js"],
       "css": ["css/overlay.css"]
     }

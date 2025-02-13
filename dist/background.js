@@ -21861,7 +21861,7 @@ function getSchedules(timeslotGroups, daysOnCampus){
     // check if days
     const validSchedules = [];
 
-    function generateCombination(index, currentCombination, daysOnCampus){
+    function generateCombination(index, currentCombination){
         
         if (index === timeslotGroups.length) {
             // If we've assigned all courses, check if it meets the requirements
@@ -21906,6 +21906,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
   if (message.action === "scrape") {
     const url = message.url;
+    // create a new tab for allocate scrape
     const tab = await chrome.tabs.create({ url: url });
     
     // connect Puppeteer to the tab
@@ -21914,9 +21915,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     });
     
     try {
-      
-      // create a new tab for allocate scrape
-      
 
       // Get the page object and set the max height
       const [page] = await browser.pages();
@@ -21948,72 +21946,58 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       // instatiate the semester
       const semester = parseInt(message.semester);
 
-      const classesHref = await page.evaluate((semester) => {
+      const classesDesc = await page.evaluate((semester) => {
         // MIGHT HAVE TO CHANGE THIS - this assumes the student takes a normal semester 1 and 2
         // i.e. this method doesn't take in account that the student maybe doing summer/winter semesters
         // so there if they choose semester 1, but they have a summer semester 
         // gets the advanced filters subject list for semester 1 and 2
-        const classElements = document.querySelectorAll('.subject-list');
+        const semesterList = document.querySelectorAll('.subject-list');
 
-        // check if theres any units for the desired semester
-        if (!classElements[semester]) {
+        if (!semesterList[semester]) {
           return null; // No subjects available
         }
-  
-        // gets all the available LTL and WRK 'li' elements for sem 1
-        const liElements = classElements[semester].querySelectorAll('.action');
+        // get all the class elements for the specified semester
+        const classElements = semesterList[semester].querySelectorAll('.subject');
 
-        // return if there are no classes
-        if (!liElements.length) {
-          return null;
-      }
-
-        // returns href of each class
-        return Array.from(liElements).map((li) => {
-            const classHref = li.querySelector('a').getAttribute('href');
-            return classHref;
+        //replace classElement with the COSC value and name value
+        const classDesc = [];
+        classElements.forEach(classInfo => {
+          const lines = classInfo.innerHTML.split('<br>').map(line => line.trim());
+          lines[0] = lines[0].split(/<[^>]*>/).join('');
+          lines[1] = lines[1].split(/<[^>]*>/).join('').replace("amp;", "");
+          lines.pop();
+          
+          classDesc.push(lines);
         });
-      }, semester);
-      
-      if (!classesHref) {
-        await page.evaluate(() => {
-          alert("No units found for the selected semester. Please select another semester with units");
-        });
-        browser.disconnect();
-        return;
-      }
-      
-      // scrape each timeslot from each available class
-      const timeslotGroups = [];
 
-      for(let i = 0; i < classesHref.length; i++){
 
-        // go to each page of students classes
-        await page.goto(url + classesHref[i]);
-        chrome.tabs.sendMessage(tab.id, { action: "success" });
+        const preferenceSection = document.getElementById("preferences-summary-flat");
+        const preferenceClassList = preferenceSection.querySelectorAll(".module");
 
-        // wait for the table to load
-        await page.waitForSelector('.aplus-table');
-        
-        // get index of th elements
-        
-        // get all tr elements
-        const timeslotGroup = await page.evaluate(() =>{
-            const descText = document.querySelectorAll("div.desc-text")[0];
-            const lines = descText.innerHTML.split('<br>').map(line => line.trim());
-            const description = lines[1].replace("amp;", "");
-            const classType = lines[2];
+        // make sure h3 is in the classesDesc
 
-            // get all th elements to see where each column is
-            const thElements = document.querySelectorAll('.aplus-table thead tr th');
-            
-            // convert it all to the text content to get the indices
+        const timeslotGroups = [];
+        preferenceClassList.forEach(classSection => {
+          const timeslots = [];
+          const headingMatch = classSection.querySelector("h3").textContent;
+          
+          // check if heading matches text within semester
+          // if it is get all the timeslots and add it
+
+          // return the second element of a pair that has matching first element to the heading
+          const matchingClass = classDesc.find(([code, title]) => headingMatch.includes(code));
+          
+          if(matchingClass){
+            const classTable = classSection.querySelector(".aplus-table");
+            const thElements = classTable.querySelectorAll('thead tr th');
             const thTexts = Array.from(thElements).map(th => th.textContent.trim());
 
-            const timeslot = document.querySelector('.aplus-table tbody').querySelectorAll('tr');
-            return Array.from(timeslot).map((el) =>{
-                // need to check if table is changed when students are allowed prefereneces
-
+            const timeslot = classSection.querySelector('.aplus-table tbody').querySelectorAll('tr');
+            Array.from(timeslot).map((el) =>{
+              
+              // need to check if table is changed when students are allowed preferences
+              if(!Array.from(el.querySelectorAll('td')).some(td => td.textContent.includes("invalid") )){
+                
                 // day 1
                 const day = el.querySelectorAll('td')[thTexts.indexOf("Day")].textContent;
                 // time 2
@@ -22023,26 +22007,33 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 // duration 5
                 const duration = el.querySelectorAll('td')[thTexts.indexOf("Duration")].textContent;
                 // description 7
-                // const description = el.querySelectorAll('td')[thTexts.indexOf("Description")].textContent;
+                const description = matchingClass[1];
                 // class type
-                // const classType = el.getAttribute('id').split('|')[1];
-                return {
+                const classType = classSection.querySelector("h3").textContent.split(" - ")[1];
+                
+                timeslots.push({
                     day,
                     time,
                     location,
                     duration,
                     description,
                     classType
-                };
+                    
+                });
+              }  
 
             });
-        });
 
-        timeslotGroups.push(timeslotGroup);
-      }
+            
+          }
+          timeslotGroups.push(timeslots);
+        });
+        return timeslotGroups;
+
+      }, semester);
       
-      const allTimeslots = [...timeslotGroups];
-      const validSchedules = getSchedules(timeslotGroups);
+      const allTimeslots = [...classesDesc];
+      const validSchedules = getSchedules(classesDesc);
 
       // create a new tab for visualiser html and send valid schedules to the page
       const visUrl = chrome.runtime.getURL("visualiser.html");

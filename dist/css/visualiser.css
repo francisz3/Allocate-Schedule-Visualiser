@@ -1,5 +1,6 @@
 /* Navbar */
 .navbar{
+    --bs-navbar-padding-y : 0.25rem !important;
     background-color: #7A71FF !important;
 }
 
