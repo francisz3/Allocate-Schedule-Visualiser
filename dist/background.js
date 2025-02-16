@@ -21930,9 +21930,18 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       // wait for navigation - they might be logged in already but it there's cases where it might navigate
       await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
-      await page.waitForSelector('title', { timeout: 2500 }); 
+      await page.waitForSelector('title', { timeout: 3000 }); 
       const pageTitle = await page.evaluate(() => document.title);
+
+      // check if they are on the home page of allocate after navigation from auth page
+      const validateURL = await page.evaluate(() => document.location.href);
+      if(!validateURL.includes("preference")){
+        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        await page.goto("https://mytimetable.rmit.edu.au/odd/student?ss=#preferences");
+      }
       
+      
+      // prompt user to log in if they are not signed in
       if(pageTitle.toLowerCase().includes("sign in")){
         await page.evaluate(() => {
           alert("Please log into Allocate before using the extension, then try going into the extension and then pressing 'Visualize Schedule' again");
@@ -21942,7 +21951,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       // gets the subject list to find each href of subject
       await page.waitForSelector('.subject-list', {timeout: 400});
-
+      
       // instatiate the semester
       const semester = parseInt(message.semester);
 

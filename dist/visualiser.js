@@ -102,7 +102,7 @@ filterForm.addEventListener('submit',function (event){
 
 
 function handleParamErrors(timeErrors, noDaysErrors, prefDayErrors, filteredSchedules){
-    const scheduleParam = analyzeSchedules(validSchedules);
+    const scheduleParam = analyseSchedules(validSchedules);
     // get error container from html
     const errorMessages = [];
     const errorContainer = document.getElementById("errorMessages");
@@ -115,6 +115,7 @@ function handleParamErrors(timeErrors, noDaysErrors, prefDayErrors, filteredSche
 
     if(!noDaysErrors){
         errorMessages.push(`- Minimum days for your possible schedules are ${scheduleParam.minDaysAtUni} days`)
+        errorMessages.push(`- Max days for your possible schedules are ${scheduleParam.maxDaysAtUni} days`)
     }
 
     if(!prefDayErrors){
@@ -320,7 +321,7 @@ function getCellForTimeSlot(timeslot){
 }
 
 
-function analyzeSchedules(validSchedules) {
+function analyseSchedules(validSchedules) {
     if (validSchedules.length === 0) {
         return;
     }
@@ -338,9 +339,15 @@ function analyzeSchedules(validSchedules) {
         new Set(schedule.map(timeslot => timeslot.day)).size
     ));
 
+    const maxDaysAtUni = Math.max(...validSchedules.map(schedule =>
+        new Set(schedule.map(timeslot => timeslot.day)).size
+    ));
+
+    console.log(maxDaysAtUni);
     return {
         mandatoryDays,
         minDaysAtUni,
+        maxDaysAtUni
     };
 }
 
