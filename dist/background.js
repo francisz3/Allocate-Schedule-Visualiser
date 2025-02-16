@@ -21942,11 +21942,11 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         return;
       }
 
-      // check if they are on the home page of allocate after navigation from auth page
+      // check if they are on the preference page of allocate, otherwise relocate to pref page after navigation from auth page
       const validateURL = await page.evaluate(() => document.location.href);
       if(!validateURL.includes("preference")){
-        await page.waitForNavigation({ waitUntil: 'networkidle0' });
         await page.goto("https://mytimetable.rmit.edu.au/odd/student?ss=#preferences");
+
       }
 
       // gets the subject list to find each href of subject
