@@ -21932,14 +21932,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
       await page.waitForSelector('title', { timeout: 3000 }); 
       const pageTitle = await page.evaluate(() => document.title);
-
-      // check if they are on the home page of allocate after navigation from auth page
-      const validateURL = await page.evaluate(() => document.location.href);
-      if(!validateURL.includes("preference")){
-        await page.waitForNavigation({ waitUntil: 'networkidle0' });
-        await page.goto("https://mytimetable.rmit.edu.au/odd/student?ss=#preferences");
-      }
-      
+     
       
       // prompt user to log in if they are not signed in
       if(pageTitle.toLowerCase().includes("sign in")){
@@ -21947,6 +21940,13 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
           alert("Please log into Allocate before using the extension, then try going into the extension and then pressing 'Visualize Schedule' again");
         });
         return;
+      }
+
+      // check if they are on the home page of allocate after navigation from auth page
+      const validateURL = await page.evaluate(() => document.location.href);
+      if(!validateURL.includes("preference")){
+        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        await page.goto("https://mytimetable.rmit.edu.au/odd/student?ss=#preferences");
       }
 
       // gets the subject list to find each href of subject
