@@ -21901,6 +21901,13 @@ function timeslotOverlap(startTime1, duration1, startTime2, duration2) {
     return s1Minutes < e2Minutes && s2Minutes < e1Minutes;
 }
 
+function decodeHtmlEntities(text) {
+  const div = document.createElement("div");
+  div.innerHTML = text;
+  return div.textContent || div.innerText;
+}
+
+
 // Listens for messages from the popup or other parts of the extension
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
@@ -21970,14 +21977,26 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
         //replace classElement with the COSC value and name value
         const classDesc = [];
+
+        function decodeHtmlEntities(text) {
+          const div = document.createElement("div");
+          div.innerHTML = text;
+          return div.textContent || div.innerText || "";
+        }
+      
         classElements.forEach(classInfo => {
-          const lines = classInfo.innerHTML.split('<br>').map(line => line.trim());
-          lines[0] = lines[0].split(/<[^>]*>/).join('');
-          lines[1] = lines[1].split(/<[^>]*>/).join('').replace("amp;", "");
-          lines.pop();
-          
-          classDesc.push(lines);
+            const lines = classInfo.innerHTML.split('<br>').map(line => line.trim());
+            lines[1] = lines[1] + "&amp";
+            alert(lines);
+            // Remove HTML tags and decode entities
+            lines[0] = decodeHtmlEntities(lines[0].replace(/<[^>]*>/g, ''));
+            lines[1] = decodeHtmlEntities(lines[1].replace(/<[^>]*>/g, ''));
+        
+            lines.pop(); // Remove the last element
+        
+            classDesc.push(lines);
         });
+      
 
 
         const preferenceSection = document.getElementById("preferences-summary-flat");
