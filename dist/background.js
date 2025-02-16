@@ -21986,8 +21986,6 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       
         classElements.forEach(classInfo => {
             const lines = classInfo.innerHTML.split('<br>').map(line => line.trim());
-            lines[1] = lines[1] + "&amp";
-            alert(lines);
             // Remove HTML tags and decode entities
             lines[0] = decodeHtmlEntities(lines[0].replace(/<[^>]*>/g, ''));
             lines[1] = decodeHtmlEntities(lines[1].replace(/<[^>]*>/g, ''));
