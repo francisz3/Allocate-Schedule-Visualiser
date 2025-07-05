@@ -6,8 +6,6 @@ Allocate Schedule Visualizer is a Chrome extension that helps you easily visuali
 
 - Simple and intuitive UI to input your available class time slots.
 
-- Utilises the Puppeteer JS Library to scrape all your classes for each unit.
-
 - Automatically generates schedules based on the timeslots of your units.
 
 - Easily toggle between different scheduling options.
@@ -49,12 +47,60 @@ Allocate Schedule Visualizer is a Chrome extension that helps you easily visuali
 
 - The current version is currently only available for RMIT
 
-- This extension uses Puppeteer, and its ability to scrape content and therefore collect and generate data will be highly dependent on the formatting of your allocate units. For instance, the extension will look for specific html elements that contain your information on your units, and if it's unable to find it due to any formatting irregularities, the extension will be unsuccesful in generating your schedules.
-
-- Therefore, please be aware that the following cases are not supported in the current version.
-  - If you're enrolled in Summer semesters / Winter semesters
-  - Table headers do not include some of the following "Activity", "Day", "Time", "Campus", "Location", "Duration"," Description"
-
 ## Contact
 
 For any questions or feedback, feel free to open an issue or reach out via email - franciszald15@gmail.com
+
+## Release Notes
+
+### v1.1.0 (08/02/25)
+
+- Initial Release
+
+- Supports:
+
+  - Automated collection of class timeslot data of user
+  - Generation of non-conflict timetable schedules
+  - Save/Download timetable data
+  - Functionality to manually choose your classes
+
+- Known Issues or Bugs
+  - ~~Classes and timeslots are hidden in Allocate before semester start, and thus cannot collect any data~~ (fixed in v1.2.0)
+
+### v1.2.0 (19/02/25)
+
+- Fix to data collection
+
+- Supports:
+
+  - Navigation to preferences to collect data
+  - Explicitly states both max and min days a student can attend university
+
+- Known Issues or Bugs
+  - ~~Issues found with data collection for those who are enrolled in different semeseter e.g. HE Flex, VE Flex~~ (fixed in v1.3.0)
+
+### v1.3.0 (5/07/25)
+
+- Rebuilt the data scraping logic to improve reliability and structure.
+
+- Supports:
+
+  - Automatically detects which semesters the student is enrolled in and displays them in the selector.
+  - Users can now optionally include Flex semester classes when generating schedules.
+  - Combines selected standard and Flex semester units seamlessly into one schedule preview.
+  - Uses page source to collect the data
+  - Checks if the current tab is on allocate, prompts user to navigate to allocate if they are elsewhere
+
+## Change Log
+
+### v1.2.0 (19/02/25)
+
+- Changed data collection method, i.e. rather than navigating to each activity info page to collect data navigates to preferences page
+
+### v1.3.0 (5/07/25)
+
+- Rehauled data scraping logic such that it no longer uses Puppeteer to collect data
+- Previous approach lacked consistency as the Allocate page would dynamically change according to enrollment period and a students chosen degree
+- Removed "Collecting Data" content script as current approach collects it immediately
+- Removed all dependencies in background.js as current approach doesn't require such dependencies
+- Reorganised code, wherein the files for the visualiser and files for the core logic of the extension (background.js, content.js, etc.) are separate
