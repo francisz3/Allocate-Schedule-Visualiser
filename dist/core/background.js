@@ -1,6 +1,9 @@
-function formatTimeslots(activityTimeslots) {
-  // formats/cleans the timeslots w/ only necessary fields e.g. day, time, location etc.
+// background.js
 
+/**
+ * formats/cleans the timeslots w/ only necessary fields e.g. day, time, location etc.
+ */
+function formatTimeslots(activityTimeslots) {
   const formattedTimeslots = [];
   for (const timeslot in activityTimeslots) {
     const timeslotData = activityTimeslots[timeslot];
@@ -17,9 +20,10 @@ function formatTimeslots(activityTimeslots) {
   return formattedTimeslots;
 }
 
+/**
+ * organises the classes into their corresponding semesters
+ */
 function organiseStudentData(studentData) {
-  // organises the classes into their corresponding semesters
-
   const organisedData = {};
   // find all semesters that selected courses are in
 
@@ -48,12 +52,18 @@ function organiseStudentData(studentData) {
   return organisedData;
 }
 
+/**
+ * Listens to see if allocate data is found
+ * - formats data
+ * - stores it in extension local storage
+ */
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "ALLOCATE_DATA_FOUND") {
     console.log("Student allocate data found", message.data);
 
     // format the data and separate them into their semesters
     const organisedData = organiseStudentData(message.data);
+    console.log(organisedData);
     // store to later access it
     chrome.storage.local.set({ allocateData: organisedData });
   }

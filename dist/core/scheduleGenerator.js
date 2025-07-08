@@ -1,8 +1,15 @@
+// scheduleGenerator.js
+//
+
+/**
+ * Generates all valid non-conflicting schedule combinations from a list of timeslot groups.
+ * each group represents different options (e.g., tutorials, lectures) for a subject.
+ */
 export function getSchedules(timeslotGroups) {
   const currentCombination = [];
 
-  // try find the days that are high priority add them to schedule
-  // drop added classes from timeslotGroups
+  // automatically select subjects with only one timeslot option
+  // and remove them from the main pool (one timeslot = no other alternative combination)
   for (const group of timeslotGroups) {
     if (group.length == 1) {
       // remove from timeslotGroups
@@ -11,12 +18,12 @@ export function getSchedules(timeslotGroups) {
     }
   }
 
-  // check if days
   const validSchedules = [];
 
+  // recursive backtracking function to generate all valid combinations
   function generateCombination(index, currentCombination) {
     if (index === timeslotGroups.length) {
-      // If we've assigned all courses, check if it meets the requirements
+      // Base case: all groups processed, add current combo as valid schedule
       validSchedules.push(currentCombination);
 
       return;
@@ -36,8 +43,9 @@ export function getSchedules(timeslotGroups) {
           )
       );
 
-      if (conflict) continue;
+      if (conflict) continue; // skip this slot if it overlaps
 
+      // Recursively continue with this slot added
       generateCombination(index + 1, [...currentCombination, slot]);
     }
   }
@@ -46,6 +54,9 @@ export function getSchedules(timeslotGroups) {
   return validSchedules;
 }
 
+/**
+ * Determines if two timeslots overlap.
+ */
 function timeslotOverlap(startTime1, duration1, startTime2, duration2) {
   // convert start times to minutes from midnight
   const s1Minutes =
@@ -59,6 +70,6 @@ function timeslotOverlap(startTime1, duration1, startTime2, duration2) {
   const e1Minutes = s1Minutes + parseInt(duration1);
   const e2Minutes = s2Minutes + parseInt(duration2);
 
-  // overlap condition: start1 < end2 && start2 < end1
+  // Check for overlap: (start1 < end2) and (start2 < end1)
   return s1Minutes < e2Minutes && s2Minutes < e1Minutes;
 }

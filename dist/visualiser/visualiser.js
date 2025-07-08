@@ -435,3 +435,6 @@ function createColorCode(timeslotGroups) {
 
 // ["#272A4F","#355070","#6d597a","#5b8071","#e69d75","#e56b6f","#854852","#61303b"];
 // ["#bf4949","#4b982d","#472073","#3977bd","#420826","#085e4e","#8c6820","#c53d9a"];
+
+// functionalities
+// filter
