@@ -34,7 +34,6 @@ Allocate Schedule Visualizer is a Chrome extension that helps you easily visuali
    ![ASV Extension popup](images/popup.png)
 
 4. The extension will retrieve all timeslot data from your units and open up a new tab.
-   ![ASV Extension retrieving timeslots](images/retrieval.png)
    ![Visualiser/Schedule page for ASV](images/visualiser.png)
 5. Use the filters on the sidebar according to your preferences and select the one that best fits your needs.
    ![Filtering through schedules](images/filter.png)
@@ -101,6 +100,7 @@ For any questions or feedback, feel free to open an issue or reach out via email
 ### v1.3.0 (5/07/25)
 
 - Rehauled data scraping logic such that it no longer uses Puppeteer to collect data
+- Now uses HTTP Request approach
 - Previous approach lacked consistency as the Allocate page would dynamically change according to enrollment period and a students chosen degree
 - Removed "Collecting Data" content script as current approach collects it immediately
 - Removed all dependencies in background.js as current approach doesn't require such dependencies

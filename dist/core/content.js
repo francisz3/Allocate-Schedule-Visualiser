@@ -32,7 +32,7 @@ for (let script of scriptTags) {
 if (targetData) {
   chrome.runtime.sendMessage({
     type: "ALLOCATE_DATA_FOUND",
-    data: targetData.student.newPreferences,
+    data: targetData.student,
   });
 } else {
   console.warn("No Allocate+ data object found.");
