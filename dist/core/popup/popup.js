@@ -29,7 +29,9 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   }
 });
 
-// get the globally set allocateData
+// Sets up the semester selection based on the globally set allocateData
+// - will check keys i.e. {"HE Sem01" : .... , "HE Sem02" : ... , "HE Flex"} , add these as option for user to select
+// Sets up visualise schedule event listener
 chrome.storage.local.get("allocateData", (result) => {
   const data = result.allocateData;
 
@@ -103,4 +105,10 @@ chrome.storage.local.get("allocateData", (result) => {
     const visUrl = chrome.runtime.getURL("../../visualiser/visualiser.html");
     chrome.tabs.create({ url: visUrl });
   });
+});
+
+chrome.storage.local.get("darkMode", (result) => {
+  if (result.darkMode) {
+    document.body.classList.toggle("dark-mode", result.darkMode);
+  }
 });

@@ -90,6 +90,7 @@ For any questions or feedback, feel free to open an issue or reach out via email
   - Combines selected standard and Flex semester units seamlessly into one schedule preview.
   - Uses page source to collect the data
   - Checks if the current tab is on allocate, prompts user to navigate to allocate if they are elsewhere
+  - Dark mode
 
 ## Change Log
 

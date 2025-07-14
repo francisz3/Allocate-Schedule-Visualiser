@@ -1,0 +1,135 @@
+.form-switch .form-check-input {
+    position: relative;
+    width: 3rem !important;
+    height: 1.5rem;
+    border: none;
+    transition: background-color 0.3s;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 1.5rem;
+}
+
+  .form-switch .form-check-input::before,
+  .form-switch .form-check-input::after {
+    content: "";
+    position: absolute;
+    top: 0.15rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    background-repeat: no-repeat;
+    background-size: contain;
+    pointer-events: none;
+  }
+
+  /* Moon icon (right) */
+  .form-switch .form-check-input::before {
+    right: 0.15rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='%23c6c3c3' viewBox='0 0 256 256'%3E%3Cpath d='M235.54,150.21a104.84,104.84,0,0,1-37,52.91A104,104,0,0,1,32,120,103.09,103.09,0,0,1,52.88,57.48a104.84,104.84,0,0,1,52.91-37,8,8,0,0,1,10,10,88.08,88.08,0,0,0,109.8,109.8,8,8,0,0,1,10,10Z'%3E%3C/path%3E%3C/svg%3E");
+    transition: opacity 0.3s;
+  }
+  
+  /* Sun icon (left) */
+  .form-switch .form-check-input::after {
+    left: 0.15rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23f2f2f2' viewBox='0 0 256 256'%3E%3Cpath d='M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm8,24a64,64,0,1,0,64,64A64.07,64.07,0,0,0,128,64ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z'/%3E%3C/svg%3E");
+
+    transition: opacity 0.3s;
+    opacity: 0;
+  }
+
+/* Toggle state */
+.form-switch .form-check-input:checked::before {
+opacity: 0;
+}
+
+.form-switch .form-check-input:checked::after {
+opacity: 1;
+} 
+
+
+body.dark-mode .filter-container {
+  background-color: #1e1e1e;
+  border-right: #000000;
+}
+
+
+body.dark-mode .filter-container select,
+body.dark-mode .filter-container textarea,
+body.dark-mode .filter-container .scheduleBtn
+ {
+  background-color: #2a2a2a;
+  color: #a09d9d;
+  border: 1px solid #7971fe54;
+}
+
+body.dark-mode .filter-container .scheduleBtn .day-pill-grp{
+    border-bottom: 1px solid #7971fe54;
+}
+
+
+body.dark-mode .view-man-container
+ {
+  background-color: #191919;
+ }
+
+body.dark-mode table,
+body.dark-mode th{
+    background-color: #1e1e1e;
+    color: #a09d9d;
+}
+
+
+body.dark-mode td
+{
+    background-color: #1e1e1e;
+    color: #a09d9d;
+    border: #4f4e4e 0.8px solid !important;
+}
+
+body.dark-mode h6
+ {
+  color: #d6d5d5;
+}
+
+body.dark-mode .err-msg p
+ {
+  color: white !important;
+}
+
+body.dark-mode .filter-container p,
+body.dark-mode label,
+body.dark-mode .time-description.group
+ {
+  color: #bcbcc0;
+}
+
+
+
+body.dark-mode .filter-container select
+ {
+  border:1px solid #1e1e1e;
+}
+
+body.dark-mode .filter-form,
+body.dark-mode .info-container{
+    border-top: 2px solid #5a5ab3;
+}
+
+body.dark-mode .popover-header{
+    color: #d6d5d5;
+    background-color: #2a2a2a;
+}
+
+body.dark-mode .popover-body,
+body.dark-mode .popover .popover-arrow
+{
+    color: #a09d9d !important;
+    --bs-popover-bg: #2a2a2a;
+    background-color: #2a2a2a;
+}
+
+body.dark-mode 
+.bs-popover-auto[data-popper-placement^=right]>.popover-arrow::before{
+    background-color: #1e1e1e;
+}
+
